@@ -1,6 +1,4 @@
 # `nefertari-example`
-[![Build Status](https://travis-ci.org/brandicted/nefertari.svg?branch=master)](https://travis-ci.org/brandicted/nefertari)
-
 This is an example RESTful API project using:
 - [Pyramid](https://github.com/Pylons/pyramid) as the web framework
 - [Nefertari](https://github.com/brandicted/nefertari) as the REST framework
