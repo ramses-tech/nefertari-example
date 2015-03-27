@@ -1,0 +1,12 @@
+cryptacular
+# (coming soon) nefertari
+# (coming soon) nefertari-mongodb
+# (coming soon) nefertari-sqla
+paste
+pyramid
+waitress
+
+-e ../nefertari
+-e ../nefertari-mongodb
+-e ../nefertari-sqla
+-e .

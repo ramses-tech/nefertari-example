@@ -1,0 +1,84 @@
+[app:example_api]
+use = egg:example_api
+
+# Nefertari settings
+nefertari.engine = nefertari.engine.sqla
+sqlalchemy.url = postgresql://%(host)s:5432/example_api
+
+# example_api
+host = localhost
+base_url = http://%(host)s
+
+auth = true
+debug = true
+static_cache_max_age = 7200
+public_max_limit = 100
+
+request_timing.enable = true
+request_timing.slow_request_threshold = 2
+
+auth_tkt_secret = UaneexaSh3choozah6mea9umoo8ePhoh
+system.user = system
+system.password = 123456
+system.email = user@domain.com
+
+#  MongoDB settings
+mongodb.host = localhost
+mongodb.port = 27017
+mongodb.db = example_api
+
+#ElasticSearch
+elasticsearch.hosts = localhost:9200
+elasticsearch.sniff = false
+elasticsearch.index_name = example_api
+elasticsearch.index.disable = false
+
+cors.enable = false
+cors.allow_origins = %(base_url)s
+cors.allow_credentials = true
+
+###
+# wsgi server configuration
+###
+
+[composite:main]
+use = egg:Paste#urlmap
+/api/ = example_api
+
+[server:main]
+use = egg:waitress#main
+host = localhost
+port = 6543
+threads = 3
+
+[loggers]
+keys = root, example_api, nefertari
+
+[handlers]
+keys = console
+
+[formatters]
+keys = generic
+
+[logger_root]
+level = INFO
+handlers = console
+
+[logger_example_api]
+level = INFO
+handlers =
+qualname = example_api
+
+[logger_nefertari]
+level = DEBUG
+handlers =
+qualname = nefertari
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = NOTSET
+formatter = generic
+
+[formatter_generic]
+format = %(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(module)s.%(funcName)s: %(message)s
