@@ -73,7 +73,8 @@ def bootstrap(config):
 def main(global_config, **settings):
     Settings.update(settings)
     Settings.update(global_config)
-
+    print Settings['sqlalchemy.url']
+    print Settings['nefertari.engine']
     authz_policy = ACLAuthorizationPolicy()
     config = Configurator(
         settings=settings,

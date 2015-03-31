@@ -11,6 +11,7 @@ $ pip install -r requirements.txt
 $ cp local.ini.template local.ini
 $ nano local.ini
 ```
+The setting `nefertari.engine` can be set to either `nefertari_mongodb` or `nefertari_sqla`
 
 ## Run
 ```
