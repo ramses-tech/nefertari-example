@@ -1,0 +1,9 @@
+cryptacular
+paste
+pyramid
+waitress
+
+-e ../nefertari
+-e ../nefertari-mongodb
+-e ../nefertari-sqla
+-e .

@@ -1,12 +1,13 @@
 cryptacular
+paste
+pyramid
+waitress
+
 # (coming soon) nefertari
 git+ssh://git@github.com/brandicted/nefertari.git
 # (coming soon) nefertari-mongodb
 git+ssh://git@github.com/brandicted/nefertari-mongodb.git
 # (coming soon) nefertari-sqla
 git+ssh://git@github.com/brandicted/nefertari-sqla.git
-paste
-pyramid
-waitress
 
 -e .
