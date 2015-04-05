@@ -56,3 +56,5 @@ target/
 #
 local.ini
 post2api.py
+
+venv
