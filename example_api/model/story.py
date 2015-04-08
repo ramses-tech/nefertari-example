@@ -16,12 +16,9 @@ class Story(ESBaseDocument):
     creation_date = DateTimeField(default=datetime.utcnow)
     start_date = DateTimeField(default=datetime.utcnow)
     due_date = DateTimeField()
-
     name = StringField()
     description = StringField()
-
     progress = FloatField(default=0)
-
     completed = BooleanField()
 
     # ForeignKeyField is ignored in mongo engine's JSON output
