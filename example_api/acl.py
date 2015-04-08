@@ -1,7 +1,7 @@
 from pyramid.security import *
 
 from nefertari.json_httpexceptions import *
-from nefertari.acl import BaseACL as NefertariBaseACL, AuthenticatedUserACLMixin
+from nefertari.acl import BaseACL as NefertariBaseACL
 from example_api.model import User, Story
 
 
@@ -16,8 +16,37 @@ class BaseACL(NefertariBaseACL):
             self.user = request.user
 
 
-class UserACL(AuthenticatedUserACLMixin, BaseACL):
+class UserACL(BaseACL):
+    """ User level ACL mixin. Mix it with your ACL class that sets
+    ``self.user`` to a currently authenticated user.
+
+    Grants access:
+        * collection 'create' to everyone.
+        * item 'update', 'delete' to owner.
+        * item 'index', 'show' to everyone.
+    """
     __context_class__ = User
+
+    def __init__(self, request):
+        super(UserACL, self).__init__(request)
+        self.acl = (Allow, Everyone, 'create')
+
+    def context_acl(self, context):
+        return [
+            (Allow, str(context.id), 'update'),
+            (Allow, Everyone, ['index', 'show']),
+            (Deny, str(context.id), 'delete'),
+        ]
+
+    def __getitem__(self, key):
+        if not self.user:
+            raise JHTTPNotFound
+
+        obj = self.user
+        obj.__acl__ = self.context_acl(obj)
+        obj.__parent__ = self
+        obj.__name__ = key
+        return obj
 
 
 class StoryACL(BaseACL):
