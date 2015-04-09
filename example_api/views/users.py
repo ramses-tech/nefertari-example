@@ -34,7 +34,7 @@ class UsersView(BaseView):
     def update(self, username):
         user = User.get_resource(username=username)
 
-        if 'group' in self._params:
+        if 'settings' in self._params:
             raise JHTTPBadRequest('Use User attributes resource to modify `group`')
 
         # empty password?
@@ -45,7 +45,7 @@ class UsersView(BaseView):
             self._params.pop('reset', '')
         user.update(self._params)
 
-        return JHTTPOk()
+        return JHTTPOk(location=self.request._route_url('users', user.username))
 
     def delete(self, username):
         User._delete(username=username)
@@ -53,23 +53,26 @@ class UsersView(BaseView):
 
 
 class UserAttributesView(BaseView):
+    _model_class = User
+
     def __init__(self, *args, **kw):
         super(UserAttributesView, self).__init__(*args, **kw)
         self.attr = self.request.path.split('/')[-1]
-        self.attr = self.attr[:-1] if self.attr.endswith('s') else self.attr
         self.value_type = None
 
-        self.unique = self.attr in ['group']
+        self.unique = self.attr in ['settings']
 
         if self.attr == 'group':
             self.value_type = str
 
     def index(self, username):
-        user = User.get_resource(username=username)
-        return getattr(user, self.attr)
+        obj = User.get_resource(username=username)
+        return getattr(obj, self.attr)
 
     def create(self, username):
         obj = User.get_resource(username=username)
-        obj.group = self._params.get(self.attr)
-        obj.save()
-        return JHTTPCreated()
+        obj.update_iterables(
+            self._params, self.attr,
+            unique=self.unique,
+            value_type=self.value_type)
+        return JHTTPCreated(resource=getattr(obj, self.attr, None))

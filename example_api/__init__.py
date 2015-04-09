@@ -138,7 +138,7 @@ def create_resources(config):
         id_name='username',
         factory="example_api.acl.UserACL")
 
-    user.add('group', 'groups',
+    user.add('setting', 'settings',
              view='example_api.views.users.UserAttributesView',
              factory="example_api.acl.UserACL")
 

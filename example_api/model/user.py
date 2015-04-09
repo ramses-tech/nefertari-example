@@ -11,7 +11,7 @@ from nefertari.utils import dictset
 from nefertari.json_httpexceptions import *
 from nefertari.engine import (
     StringField, ChoiceField, PrimaryKeyField, DateTimeField,
-    Relationship)
+    Relationship, DictField)
 from nefertari.engine import BaseDocument as NefertariBaseDocument
 
 from example_api.model.base import BaseDocument
@@ -75,6 +75,8 @@ class User(BaseDocument):
     status = ChoiceField(
         choices=['active', 'inactive', 'blocked'], default='active',
         types_name='user_status_types')
+
+    settings = DictField()
 
     uid = property(lambda self: str(self.id))
 
