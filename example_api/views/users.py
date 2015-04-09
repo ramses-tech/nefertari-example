@@ -13,20 +13,20 @@ class UsersView(BaseView):
     _model_class = User
 
     def index(self):
-        if 'group' not in self._params:
-            self._params['group'] = 'user'
-        elif self._params['group'] == '_all':
-            self._params.pop('group')
-        return User.get_collection(**self._params)
+        if 'groups' not in self._params:
+            self._params['groups'] = 'user'
+        elif self._params['groups'] == '_all':
+            self._params.pop('groups')
+        return self._model_class.get_collection(**self._params)
 
     def show(self, **kwargs):
         return self.context
 
     def create(self):
-        self._params.setdefault('group', 'user')
+        self._params.setdefault('groups', ['user'])
 
-        user = User(**self._params).save()
-        id_field = User.id_field()
+        user = self._model_class(**self._params).save()
+        id_field = self._model_class.id_field()
 
         return JHTTPCreated(
             location=self.request._route_url('users', getattr(user, id_field)),
@@ -34,10 +34,11 @@ class UsersView(BaseView):
 
     def update(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
-        user = User.get_resource(**kwargs)
+        user = self._model_class.get_resource(**kwargs)
 
-        if 'settings' in self._params:
-            raise JHTTPBadRequest('Use User attributes resource to modify `group`')
+        if 'settings' in self._params or 'groups' in self._params:
+            raise JHTTPBadRequest('Use User attributes resource to '
+                                  'modify attributes')
 
         # empty password?
         if 'password' in self._params and self._params['password'] == '':
@@ -47,13 +48,13 @@ class UsersView(BaseView):
             self._params.pop('reset', '')
         user.update(self._params)
 
-        id_field = User.id_field()
+        id_field = self._model_class.id_field()
         return JHTTPOk(location=self.request._route_url(
             'users', getattr(user, id_field)))
 
     def delete(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
-        User._delete(**kwargs)
+        self._model_class._delete(**kwargs)
         return JHTTPOk()
 
 
@@ -64,20 +65,16 @@ class UserAttributesView(BaseView):
         super(UserAttributesView, self).__init__(*args, **kw)
         self.attr = self.request.path.split('/')[-1]
         self.value_type = None
-
-        self.unique = self.attr in ['settings']
-
-        if self.attr == 'group':
-            self.value_type = str
+        self.unique = self.attr in ['settings', 'groups']
 
     def index(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
-        obj = User.get_resource(**kwargs)
+        obj = self._model_class.get_resource(**kwargs)
         return getattr(obj, self.attr)
 
     def create(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
-        obj = User.get_resource(**kwargs)
+        obj = self._model_class.get_resource(**kwargs)
         obj.update_iterables(
             self._params, self.attr,
             unique=self.unique,
