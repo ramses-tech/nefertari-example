@@ -118,12 +118,13 @@ class User(BaseDocument):
 
     @classmethod
     def get_unauth_user(cls, request):
-        username = request.matchdict.get('username')
+        id_field = cls.id_field()
+        arg = request.matchdict.get('user_' + id_field)
 
-        if username == 'self' or not username:
-            username = 'system'
+        if arg == 'self' or not arg:
+            return cls.get_resource(username='system')
 
-        return cls.get_resource(username=username)
+        return cls.get_resource(**{id_field: arg})
 
     def to_dict(self, **kw):
 
