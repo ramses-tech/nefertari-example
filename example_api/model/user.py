@@ -54,7 +54,7 @@ class User(BaseDocument):
     # when switching engine.
     stories = Relationship(
         document='Story', ondelete='NULLIFY',
-        backref_name='user', backref_ondelete='NULLIFY')
+        backref_name='owner', backref_ondelete='NULLIFY')
 
     id = IdField()
     timestamp = DateTimeField(default=datetime.utcnow)
