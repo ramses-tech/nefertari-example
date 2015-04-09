@@ -20,4 +20,10 @@ class BaseView(NefertariBaseView):
         self._auth = example_api.Settings.asbool('auth')
 
     def resolve_kwargs(self, kwargs):
-        return {k.split('_', 1)[1]: v for k, v in kwargs.items()}
+        resolved = {}
+        for key, value in kwargs.items():
+            key = key.split('_', 1)[1]
+            if value == 'self':
+                value = getattr(self.request.user, key)
+            resolved[key] = value
+        return resolved
