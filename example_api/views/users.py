@@ -36,9 +36,6 @@ class UsersView(BaseView):
         kwargs = self.resolve_kwargs(kwargs)
         user = User.get_resource(**kwargs)
 
-        if 'settings' in self._params:
-            raise JHTTPBadRequest('Use User attributes resource to modify `group`')
-
         # empty password?
         if 'password' in self._params and self._params['password'] == '':
             self._params.pop('password')

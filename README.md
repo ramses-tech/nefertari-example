@@ -15,7 +15,6 @@ The setting `nefertari.engine` can be set to either `nefertari_mongodb` or `nefe
 
 ## Run
 ```
-$ workon nefertari-example && cd
 $ pserve local.ini
 ```
 

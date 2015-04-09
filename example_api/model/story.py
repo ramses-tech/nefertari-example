@@ -29,8 +29,8 @@ class Story(ESBaseDocument):
     #
     # `ondelete` rules may be kept in both fields with no side-effects
     # when switching engine.
-    user_id = ForeignKeyField(
-        ref_document='User', ref_column='users.id',
-        ref_column_type=IdField)
+    owner = ForeignKeyField(
+        ref_document='User', ref_column='users.username',
+        ref_column_type=StringField)
 
     _auth_fields = ['id', 'name']
