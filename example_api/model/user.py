@@ -71,10 +71,9 @@ class User(BaseDocument):
     last_name = StringField(max_length=50, default='')
     last_login = DateTimeField()
 
-    groups = ListField(item_type=StringField)
-    # group = ChoiceField(
-    #     choices=['admin', 'user'], default='user')
-
+    groups = ListField(
+        item_type=StringField,
+        choices=['admin', 'user'], default=['user'])
 
     status = ChoiceField(
         choices=['active', 'inactive', 'blocked'], default='active')
