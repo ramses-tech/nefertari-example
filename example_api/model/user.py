@@ -54,14 +54,15 @@ class User(BaseDocument):
     # when switching engine.
     stories = Relationship(
         document='Story', ondelete='NULLIFY',
-        backref_name='user', backref_ondelete='NULLIFY')
+        backref_name='owner', backref_ondelete='NULLIFY')
 
-    id = IdField(primary_key=True)
+    id = IdField()
     timestamp = DateTimeField(default=datetime.utcnow)
 
     username = StringField(
-        min_length=1, max_length=50, unique=True,
+        primary_key=True, min_length=1, max_length=50, unique=True,
         processors=[random_uuid, lower_strip])
+
     email = StringField(unique=True, required=True, processors=[lower_strip])
     password = StringField(
         min_length=3, required=True, processors=[crypt_password])
