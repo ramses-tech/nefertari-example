@@ -11,7 +11,7 @@ from nefertari.utils import dictset
 from nefertari.json_httpexceptions import *
 from nefertari.engine import (
     StringField, ChoiceField, DateTimeField,
-    Relationship, DictField, IdField)
+    Relationship, DictField, IdField, ListField)
 from nefertari.engine import BaseDocument as NefertariBaseDocument
 
 from example_api.model.base import BaseDocument
@@ -37,7 +37,7 @@ def random_uuid(value):
 class User(BaseDocument):
     "Represents a user"
     meta = dict(
-        indexes=['username', 'email', 'group', 'timestamp',
+        indexes=['username', 'email', 'groups', 'timestamp',
                  'last_login', 'status'],
         ordering=['-timestamp']
     )
@@ -70,12 +70,13 @@ class User(BaseDocument):
     first_name = StringField(max_length=50, default='')
     last_name = StringField(max_length=50, default='')
     last_login = DateTimeField()
-    group = ChoiceField(
-        choices=['admin', 'user'], default='user',
-        types_name='user_group_types')
+
+    groups = ListField(
+        item_type=StringField,
+        choices=['admin', 'user'], default=['user'])
+
     status = ChoiceField(
-        choices=['active', 'inactive', 'blocked'], default='active',
-        types_name='user_status_types')
+        choices=['active', 'inactive', 'blocked'], default='active')
 
     settings = DictField()
 
@@ -108,7 +109,7 @@ class User(BaseDocument):
     def groupfinder(cls, userid, request):
         user = cls.get_resource(id=userid)
         if user:
-            return ['g:%s' % user.group]
+            return ['g:%s' % g for g in user.groups]
 
     @classmethod
     def get_auth_user(cls, request):
@@ -152,7 +153,7 @@ class User(BaseDocument):
         return _d
 
     def is_admin(self):
-        return self.group == 'admin'
+        return 'admin' in self.groups
 
     def on_login(self, request=None):
         self.last_login = datetime.utcnow()
