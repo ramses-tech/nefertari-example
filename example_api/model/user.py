@@ -37,7 +37,7 @@ def random_uuid(value):
 class User(BaseDocument):
     "Represents a user"
     meta = dict(
-        indexes=['username', 'email', 'group', 'timestamp',
+        indexes=['username', 'email', 'groups', 'timestamp',
                  'last_login', 'status'],
         ordering=['-timestamp']
     )
