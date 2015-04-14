@@ -76,3 +76,27 @@ class UserAttributesView(BaseView):
             unique=self.unique,
             value_type=self.value_type)
         return JHTTPCreated(resource=getattr(obj, self.attr, None))
+
+
+class UserProfileView(BaseView):
+    _model_class = Profile
+
+    def index(self, **kwargs):
+        kwargs = self.resolve_kwargs(kwargs)
+        obj = self._model_class.get_resource(**kwargs)
+        return getattr(obj, self.attr)
+
+    def create(self, **kwargs):
+        kwargs = self.resolve_kwargs(kwargs)
+        obj = self._model_class.get_resource(**kwargs)
+        obj.profile = _model_class(self._params)
+        return JHTTPCreated(resource=obj.profile)
+
+    def update(self, **kwargs):
+        kwargs = self.resolve_kwargs(kwargs)
+        user = self._model_class.get_resource(**kwargs)
+        user.profile.update(self._params)
+
+        id_field = self._model_class.id_field()
+        return JHTTPOk(location=self.request._route_url(
+            'users:profile', getattr(user, id_field)))

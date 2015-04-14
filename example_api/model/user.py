@@ -55,6 +55,10 @@ class User(BaseDocument):
     stories = Relationship(
         document='Story', ondelete='NULLIFY',
         backref_name='owner', backref_ondelete='NULLIFY')
+    profile = eng.Relationship(
+        document='Profile', ondelete='NULLIFY',
+        backref_name='user', backref_ondelete='NULLIFY',
+        uselist=False)
 
     id = IdField()
     timestamp = DateTimeField(default=datetime.utcnow)
@@ -183,3 +187,15 @@ class User(BaseDocument):
         except JHTTPBadRequest as e:
             log.error(e)
             raise JHTTPBadRequest('Failed to create account.')
+
+
+class Profile(BaseDocument):
+    "Represents a user"
+    __tablename__ = 'profiles'
+
+    id = eng.IdField(primary_key=True)
+    user_id = eng.ForeignKeyField(
+        ref_document='User',
+        ref_column='users.username',
+        ref_column_type=eng.StringField)
+    address = eng.UnicodeText()
