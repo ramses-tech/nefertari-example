@@ -82,6 +82,7 @@ def main(global_config, **settings):
 
     config.include('nefertari.engine')
 
+    from example_api.model import Profile
     from example_api.model import User
     authn_policy = AuthTktAuthenticationPolicy(
         Settings['auth_tkt_secret'],
@@ -142,6 +143,9 @@ def create_resources(config):
              factory="example_api.acl.UserACL")
     user.add('setting', 'settings',
              view='example_api.views.users.UserAttributesView',
+             factory="example_api.acl.UserACL")
+    user.add('profile',
+             view='example_api.views.users.UserProfileView',
              factory="example_api.acl.UserACL")
 
     root.add('s_one', 's', factory='nefertari.acl.GuestACL')

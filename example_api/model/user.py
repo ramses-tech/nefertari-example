@@ -32,6 +32,17 @@ def random_uuid(value):
     return value or uuid.uuid4().hex
 
 
+class Profile(BaseDocument):
+    __tablename__ = 'profiles'
+
+    id = eng.IdField(primary_key=True)
+    user_id = eng.ForeignKeyField(
+        ref_document='User',
+        ref_column='users.username',
+        ref_column_type=eng.StringField)
+    address = eng.UnicodeTextField()
+
+
 class User(BaseDocument):
     "Represents a user"
     meta = dict(
@@ -40,7 +51,7 @@ class User(BaseDocument):
         ordering=['-timestamp']
     )
     __tablename__ = 'users'
-    _nested_relationships = ['stories']
+    _nested_relationships = ['stories', 'profile']
 
     # `Relationship` - constructor for defining one-to-N relationships
     #
@@ -54,9 +65,7 @@ class User(BaseDocument):
         document='Story', ondelete='NULLIFY',
         backref_name='owner', backref_ondelete='NULLIFY')
     profile = eng.Relationship(
-        document='Profile', ondelete='NULLIFY',
-        backref_name='user', backref_ondelete='NULLIFY',
-        uselist=False)
+        document='Profile', backref_name='user', uselist=False)
 
     id = eng.IdField()
     timestamp = eng.DateTimeField(default=datetime.utcnow)
@@ -187,15 +196,3 @@ class User(BaseDocument):
         except JHTTPBadRequest as e:
             log.error(e)
             raise JHTTPBadRequest('Failed to create account.')
-
-
-class Profile(BaseDocument):
-    "Represents a user"
-    __tablename__ = 'profiles'
-
-    id = eng.IdField(primary_key=True)
-    user_id = eng.ForeignKeyField(
-        ref_document='User',
-        ref_column='users.username',
-        ref_column_type=eng.StringField)
-    address = eng.UnicodeText()
