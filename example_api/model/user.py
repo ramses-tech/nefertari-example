@@ -32,6 +32,17 @@ def random_uuid(value):
     return value or uuid.uuid4().hex
 
 
+class Profile(BaseDocument):
+    __tablename__ = 'profiles'
+
+    id = eng.IdField(primary_key=True)
+    user_id = eng.ForeignKeyField(
+        ref_document='User',
+        ref_column='users.username',
+        ref_column_type=eng.StringField)
+    address = eng.UnicodeTextField()
+
+
 class User(BaseDocument):
     "Represents a user"
     meta = dict(
@@ -40,7 +51,7 @@ class User(BaseDocument):
         ordering=['-timestamp']
     )
     __tablename__ = 'users'
-    _nested_relationships = ['stories']
+    _nested_relationships = ['stories', 'profile']
 
     # `Relationship` - constructor for defining one-to-N relationships
     #
@@ -53,6 +64,8 @@ class User(BaseDocument):
     stories = eng.Relationship(
         document='Story', ondelete='NULLIFY',
         backref_name='owner', backref_ondelete='NULLIFY')
+    profile = eng.Relationship(
+        document='Profile', backref_name='user', uselist=False)
 
     id = eng.IdField()
     timestamp = eng.DateTimeField(default=datetime.utcnow)

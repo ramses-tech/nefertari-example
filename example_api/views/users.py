@@ -3,7 +3,7 @@ from pyramid.security import *
 from nefertari.json_httpexceptions import *
 
 from example_api.views.base import BaseView
-from example_api.model import User
+from example_api.model import User, Profile
 
 
 log = logging.getLogger(__name__)
@@ -76,3 +76,29 @@ class UserAttributesView(BaseView):
             unique=self.unique,
             value_type=self.value_type)
         return JHTTPCreated(resource=getattr(obj, self.attr, None))
+
+
+class UserProfileView(BaseView):
+    _model_class = Profile
+
+    def show(self, **kwargs):
+        kwargs = self.resolve_kwargs(kwargs)
+        user = User.get_resource(**kwargs)
+        return user.profile
+
+    def create(self, **kwargs):
+        kwargs = self.resolve_kwargs(kwargs)
+        obj = User.get_resource(**kwargs)
+        profile = self._model_class(**self._params).save()
+        obj.update({'profile': profile})
+        return JHTTPCreated(resource=obj.profile.to_dict())
+
+    def update(self, **kwargs):
+        kwargs = self.resolve_kwargs(kwargs)
+        user = User.get_resource(**kwargs)
+        user.profile.update(self._params)
+
+        id_field = User.id_field()
+        return JHTTPOk(location=self.request._route_url(
+            'user:profile',
+            **{'user_{}'.format(id_field): getattr(user, id_field)}))
