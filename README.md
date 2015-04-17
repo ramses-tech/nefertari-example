@@ -57,11 +57,10 @@ or in the browser:
 | `_start=<n>` | to start collection from the `<n>`th resource |
 | `_page=<n>` | to start collection at page `<n>` (n * _limit) |
 
-## Mock data
+## Add mock data
 ```
-$ curl -O https://raw.githubusercontent.com/jstoiko/post2api/master/post2api.py
-$ pip install requests
-$ python post2api.py -f ./mock/Users.json -u http://localhost:6543/api/users
-$ python post2api.py -f ./mock/Stories.json -u http://localhost:6543/api/stories
+$ nefertari.post2api -f ./mock/Users.json -u http://localhost:6543/api/users
+$ nefertari.post2api -f ./mock/Profiles.json -u http://localhost:6543/api/users/{username}/profile
+$ nefertari.post2api -f ./mock/Stories.json -u http://localhost:6543/api/stories
 ```
 NOTE: set auth = false in local.ini file before executing
