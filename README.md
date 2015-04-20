@@ -45,18 +45,6 @@ or in the browser:
 | `/api/admin/settings` | to view/edit settings at runtime (requires admin permissions or auth=false) |
 | `/api/admin/loglevels/<logger_key>` | to view/edit loglevels at runtime (requires admin permissions or auth=false) |
 
-## URL parameters
-| url parameter | description |
-|---------------|-------------|
-| `_m=<method>` | to force an http method using GET, e.g. _m=POST |
-| `q=<keywords>` | to filter an ElasticSearch collection using 'keyword ((AND|OR) more_keyword)' syntax |
-| `_fields=<field_list>` | to display only specific fields, use - before field names to exclude those fields, e.g. `_fields=-descripton` |
-| `_search_fields=<field_list>` | use with `?q=<keywords>` to restrict search to specific fields |
-| `_limit=<n>` | to limit the returned collection to n results (default is 20, max limit is 100 for unauthenticated users) |
-| `_sort=<field>` | to sort collection by `<field>` |
-| `_start=<n>` | to start collection from the `<n>`th resource |
-| `_page=<n>` | to start collection at page `<n>` (n * _limit) |
-
 ## Add mock data
 ```
 $ nefertari.post2api -f ./mock/Users.json -u http://localhost:6543/api/users
