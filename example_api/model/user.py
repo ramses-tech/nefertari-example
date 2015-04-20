@@ -9,9 +9,7 @@ from pyramid.security import authenticated_userid
 
 from nefertari.utils import dictset
 from nefertari.json_httpexceptions import *
-from nefertari.engine import (
-    StringField, ChoiceField, DateTimeField,
-    Relationship, DictField, IdField)
+from nefertari import engine as eng
 from nefertari.engine import BaseDocument as NefertariBaseDocument
 
 from example_api.model.base import BaseDocument
@@ -34,15 +32,26 @@ def random_uuid(value):
     return value or uuid.uuid4().hex
 
 
+class Profile(BaseDocument):
+    __tablename__ = 'profiles'
+
+    id = eng.IdField(primary_key=True)
+    user_id = eng.ForeignKeyField(
+        ref_document='User',
+        ref_column='users.username',
+        ref_column_type=eng.StringField)
+    address = eng.UnicodeTextField()
+
+
 class User(BaseDocument):
     "Represents a user"
     meta = dict(
-        indexes=['username', 'email', 'group', 'timestamp',
+        indexes=['username', 'email', 'groups', 'timestamp',
                  'last_login', 'status'],
         ordering=['-timestamp']
     )
     __tablename__ = 'users'
-    _nested_relationships = ['stories']
+    _nested_relationships = ['stories', 'profile']
 
     # `Relationship` - constructor for defining one-to-N relationships
     #
@@ -52,31 +61,37 @@ class User(BaseDocument):
     #
     # `ondelete` rules may be kept in both fields with no side-effects
     # when switching engine.
-    stories = Relationship(
+    stories = eng.Relationship(
         document='Story', ondelete='NULLIFY',
-        backref_name='user', backref_ondelete='NULLIFY')
+        backref_name='owner', backref_ondelete='NULLIFY')
+    profile = eng.Relationship(
+        document='Profile', backref_name='user', uselist=False)
 
-    id = IdField(primary_key=True)
-    timestamp = DateTimeField(default=datetime.utcnow)
+    id = eng.IdField()
+    timestamp = eng.DateTimeField(default=datetime.utcnow)
 
-    username = StringField(
-        min_length=1, max_length=50, unique=True,
+    username = eng.StringField(
+        primary_key=True, min_length=1, max_length=50, unique=True,
         processors=[random_uuid, lower_strip])
-    email = StringField(unique=True, required=True, processors=[lower_strip])
-    password = StringField(
+
+    email = eng.StringField(
+        unique=True, required=True,
+        processors=[lower_strip])
+    password = eng.StringField(
         min_length=3, required=True, processors=[crypt_password])
 
-    first_name = StringField(max_length=50, default='')
-    last_name = StringField(max_length=50, default='')
-    last_login = DateTimeField()
-    group = ChoiceField(
-        choices=['admin', 'user'], default='user',
-        types_name='user_group_types')
-    status = ChoiceField(
-        choices=['active', 'inactive', 'blocked'], default='active',
-        types_name='user_status_types')
+    first_name = eng.StringField(max_length=50, default='')
+    last_name = eng.StringField(max_length=50, default='')
+    last_login = eng.DateTimeField()
 
-    settings = DictField()
+    groups = eng.ListField(
+        item_type=eng.StringField,
+        choices=['admin', 'user'], default=['user'])
+
+    status = eng.ChoiceField(
+        choices=['active', 'inactive', 'blocked'], default='active')
+
+    settings = eng.DictField()
 
     uid = property(lambda self: str(self.id))
 
@@ -107,7 +122,7 @@ class User(BaseDocument):
     def groupfinder(cls, userid, request):
         user = cls.get_resource(id=userid)
         if user:
-            return ['g:%s' % user.group]
+            return ['g:%s' % g for g in user.groups]
 
     @classmethod
     def get_auth_user(cls, request):
@@ -117,12 +132,13 @@ class User(BaseDocument):
 
     @classmethod
     def get_unauth_user(cls, request):
-        username = request.matchdict.get('username')
+        id_field = cls.id_field()
+        arg = request.matchdict.get('user_' + id_field)
 
-        if username == 'self' or not username:
-            username = 'system'
+        if arg == 'self' or not arg:
+            return cls.get_resource(username='system')
 
-        return cls.get_resource(username=username)
+        return cls.get_resource(**{id_field: arg})
 
     def to_dict(self, **kw):
 
@@ -150,7 +166,7 @@ class User(BaseDocument):
         return _d
 
     def is_admin(self):
-        return self.group == 'admin'
+        return 'admin' in self.groups
 
     def on_login(self, request=None):
         self.last_login = datetime.utcnow()

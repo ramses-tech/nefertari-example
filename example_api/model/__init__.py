@@ -10,4 +10,5 @@ def includeme(config):
 
 
 from example_api.model.story import Story
+from example_api.model.user import Profile
 from example_api.model.user import User
