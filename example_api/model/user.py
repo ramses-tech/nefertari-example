@@ -19,7 +19,8 @@ log = logging.getLogger(__name__)
 
 
 def crypt_password(password):
-    if password:
+    """ Crypt :password: if it isn't crypted. """
+    if password and not crypt.match(password):
         password = unicode(crypt.encode(password))
     return password
 
