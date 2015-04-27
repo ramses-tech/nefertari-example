@@ -1,7 +1,7 @@
 cryptacular==1.4.1
-nefertari
-nefertari-mongodb
-nefertari-sqla
+nefertari==0.2.1
+nefertari-mongodb==0.1.1
+nefertari-sqla==0.1.1
 Paste==1.7.5.1
 pyramid==1.5.4
 waitress==0.8.9
