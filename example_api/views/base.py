@@ -16,7 +16,6 @@ class BaseView(NefertariBaseView):
         if self.request.method == 'GET':
             self._params.process_int_param('_limit', 20)
 
-        self._params.process_datetime_param('timestamp')
         self._auth = example_api.Settings.asbool('auth')
 
     def resolve_kwargs(self, kwargs):
