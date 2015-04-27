@@ -96,9 +96,8 @@ class User(BaseDocument):
 
     uid = property(lambda self: str(self.id))
 
-    _public_fields = ['id', 'username', 'first_name', 'last_name', '_type',
+    _auth_fields = ['id', 'username', 'first_name', 'last_name', '_type',
                       'stories']
-    _auth_fields = _public_fields
 
     def verify_password(self, password):
         return crypt.check(self.password, password)
@@ -160,9 +159,6 @@ class User(BaseDocument):
         _d['_id'] = self.id
 
         _d.pop('password', None)
-
-        if not (request or self.is_admin() or is_self()):
-            _d = _d.subset(self._public_fields)
 
         return _d
 

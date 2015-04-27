@@ -32,9 +32,6 @@ class BaseDocumentMixin(object):
             if not request.user.is_admin() and self._auth_fields:
                 _fields &= set(self._auth_fields)
 
-        elif self._public_fields:
-            _fields &= set(self._public_fields)
-
         if _nested and self._nested_fields:
             _fields &= set(self._nested_fields)
 
