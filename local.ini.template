@@ -7,10 +7,6 @@ nefertari.engine = nefertari_mongodb
 # sqla
 sqlalchemy.url = postgresql://%(host)s:5432/example_api
 
-# example_api
-host = localhost
-base_url = http://%(host)s
-
 auth = true
 debug = true
 static_cache_max_age = 7200
@@ -36,7 +32,7 @@ elasticsearch.index_name = example_api
 elasticsearch.index.disable = false
 
 cors.enable = false
-cors.allow_origins = %(base_url)s
+cors.allow_origins = http://localhost:6543
 cors.allow_credentials = true
 
 ###
