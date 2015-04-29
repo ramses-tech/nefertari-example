@@ -96,8 +96,8 @@ class User(BaseDocument):
 
     uid = property(lambda self: str(self.id))
 
-    _auth_fields = ['id', 'username', 'first_name', 'last_name', '_type',
-                      'stories']
+    _auth_fields = ['id', 'username', 'first_name', 'last_name', 'stories']
+    _public_fields = ['username']
 
     def verify_password(self, password):
         return crypt.check(self.password, password)
