@@ -42,8 +42,6 @@ or in the browser:
 | `/api/stories` | all stories (first 100 records availble to guest users) |
 | `/api/s` | ES endpoint dedicated to search (use with the `?q=` parameter) |
 | `/api/account?_m=POST&email=<email>&password=<password>` | to create a user and login right away |
-| `/api/admin/settings` | to view/edit settings at runtime (requires admin permissions or auth=false) |
-| `/api/admin/loglevels/<logger_key>` | to view/edit loglevels at runtime (requires admin permissions or auth=false) |
 
 ## Add mock data
 ```
