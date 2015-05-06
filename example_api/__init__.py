@@ -155,10 +155,6 @@ def create_resources(config):
         id_name='story_' + Story.id_field(),
         factory="example_api.acl.StoryACL")
 
-    # admin
-    root.add('loglevel', 'loglevels', prefix='admin', view='example_api.views.admin.LogLevelView')
-    root.add('setting', 'settings', prefix='admin', view='example_api.views.admin.SettingsView')
-
 
 def initialize():
     from example_api.model import User
