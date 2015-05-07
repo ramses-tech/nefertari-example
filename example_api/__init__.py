@@ -51,10 +51,12 @@ def bootstrap(config):
         config.add_tween('nefertari.tweens.request_timing')
 
     if Settings.asbool('auth', False):
-        config.add_request_method('example_api.model.User.get_auth_user', 'user', reify=True)
+        config.add_request_method(
+            'example_api.model.User.authuser_by_userid', 'user', reify=True)
     else:
         log.warning('*** USER AUTHENTICATION IS DISABLED ! ***')
-        config.add_request_method('example_api.model.User.get_unauth_user', 'user', reify=True)
+        config.add_request_method(
+            'example_api.model.User.get_unauth_user', 'user', reify=True)
 
     def _route_url(request, route_name, *args, **kw):
         if config.route_prefix:
@@ -69,6 +71,7 @@ def bootstrap(config):
         return request.route_path(route_name, *args, **kw)
 
     config.add_request_method(_route_path)
+
 
 def main(global_config, **settings):
     Settings.update(settings)
@@ -86,7 +89,7 @@ def main(global_config, **settings):
     from example_api.model import User
     authn_policy = AuthTktAuthenticationPolicy(
         Settings['auth_tkt_secret'],
-        callback=User.groupfinder,
+        callback=User.groups_by_userid,
         hashalg='sha512',
         cookie_name='example_api_auth_tkt',
         http_only=True,
@@ -103,6 +106,7 @@ def main(global_config, **settings):
 
     return config.make_wsgi_app()
 
+
 def includeme(config):
     log.info("%s %s" % (APP_NAME, __version__))
 
@@ -111,20 +115,19 @@ def includeme(config):
     config.scan(package='example_api.views')
 
     config.add_route('login', '/login')
-    config.add_view(view='example_api.views.account.AccountView',
-                route_name='login', attr='login', request_method='POST')
+    config.add_view(
+        view='example_api.views.account.TicketAuthenticationView',
+        route_name='login', attr='login', request_method='POST')
 
     config.add_route('logout', '/logout')
-    config.add_view(view='example_api.views.account.AccountView',
-                route_name='logout', attr='logout')
+    config.add_view(
+        view='example_api.views.account.TicketAuthenticationView',
+        route_name='logout', attr='logout')
 
-    config.add_route('account', '/account')
-    config.add_view(view='example_api.views.account.AccountView',
-                route_name='account', attr='create', request_method='POST')
-
-    config.add_route('reset_password', '/account/reset_password')
-    config.add_view(view='example_api.views.account.AccountView',
-                route_name='reset_password', attr='reset_password', request_method='POST')
+    config.add_route('register', '/register')
+    config.add_view(
+        view='example_api.views.account.TicketAuthenticationView',
+        route_name='register', attr='register', request_method='POST')
 
     create_resources(config)
 
