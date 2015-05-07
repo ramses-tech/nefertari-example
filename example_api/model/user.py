@@ -1,16 +1,13 @@
 import logging
-import random
-import string
 import uuid
 from datetime import datetime
 
 import cryptacular.bcrypt
-from pyramid.security import authenticated_userid
 
-from nefertari.utils import dictset
 from nefertari.json_httpexceptions import *
 from nefertari import engine as eng
 from nefertari.engine import BaseDocument as NefertariBaseDocument
+from nefertari.authentication.models import AuthModelDefaultMixin
 
 from example_api.model.base import BaseDocument
 
@@ -44,7 +41,7 @@ class Profile(BaseDocument):
     address = eng.UnicodeTextField()
 
 
-class User(BaseDocument):
+class User(AuthModelDefaultMixin, BaseDocument):
     "Represents a user"
     meta = dict(
         indexes=['username', 'email', 'groups', 'timestamp',
@@ -94,41 +91,8 @@ class User(BaseDocument):
 
     settings = eng.DictField()
 
-    uid = property(lambda self: str(self.id))
-
     _auth_fields = ['id', 'username', 'first_name', 'last_name', 'stories']
     _public_fields = ['username']
-
-    def verify_password(self, password):
-        return crypt.check(self.password, password)
-
-    @classmethod
-    def authenticate(cls, params):
-        success = False
-        user = None
-
-        login = params['login'].lower().strip()
-        if '@' in login:
-            user = cls.get_resource(email=login)
-        else:
-            user = cls.get_resource(username=login)
-
-        if user:
-            password = params.get('password', None)
-            success = (password and user.verify_password(password))
-        return success, user
-
-    @classmethod
-    def groupfinder(cls, userid, request):
-        user = cls.get_resource(id=userid)
-        if user:
-            return ['g:%s' % g for g in user.groups]
-
-    @classmethod
-    def get_auth_user(cls, request):
-        _id = authenticated_userid(request)
-        if _id:
-            return cls.get_resource(id=_id)
 
     @classmethod
     def get_unauth_user(cls, request):
@@ -162,34 +126,5 @@ class User(BaseDocument):
 
         return _d
 
-    def is_admin(self):
-        return 'admin' in self.groups
-
-    def on_login(self, request=None):
-        self.last_login = datetime.utcnow()
-        self.save()
-
     def __repr__(self):
         return '<%s: username=%s>' % (self.__class__.__name__, self.username)
-
-    def is_active(self):
-        return self.status == 'active'
-
-    @classmethod
-    def random_password(cls, len=10):
-        chars = [random.choice(string.ascii_uppercase + string.digits)
-                 for x in range(len)]
-        return ''.join(chars)
-
-    @classmethod
-    def create_account(cls, params):
-        user_params = dictset(params).subset(
-            ['username', 'email', 'password', 'first_name', 'last_name'])
-        try:
-            user_params['status'] = 'inactive'
-            return cls.get_or_create(
-                email=user_params['email'],
-                defaults=user_params)
-        except JHTTPBadRequest as e:
-            log.error(e)
-            raise JHTTPBadRequest('Failed to create account.')

@@ -30,7 +30,7 @@ class UserACL(BaseACL):
 
     def __init__(self, request):
         super(UserACL, self).__init__(request)
-        self.acl = (Allow, Everyone, ['create', 'show'])
+        self.acl = (Allow, Everyone, ['index', 'create', 'show'])
 
     def context_acl(self, context):
         return [
