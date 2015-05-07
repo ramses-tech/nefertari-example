@@ -13,19 +13,19 @@ class UsersView(BaseView):
     _model_class = User
 
     def index(self):
-        if 'groups' not in self._params:
-            self._params['groups'] = 'user'
-        elif self._params['groups'] == '_all':
-            self._params.pop('groups')
-        return self._model_class.get_collection(**self._params)
+        if 'groups' not in self._query_params:
+            self._query_params['groups'] = 'user'
+        elif self._query_params['groups'] == '_all':
+            self._query_params.pop('groups')
+        return self._model_class.get_collection(**self._query_params)
 
     def show(self, **kwargs):
         return self.context
 
     def create(self):
-        self._params.setdefault('groups', ['user'])
+        self._json_params.setdefault('groups', ['user'])
 
-        user = self._model_class(**self._params).save()
+        user = self._model_class(**self._json_params).save()
         id_field = self._model_class.id_field()
 
         return JHTTPCreated(
@@ -37,12 +37,13 @@ class UsersView(BaseView):
         user = self._model_class.get_resource(**kwargs)
 
         # empty password?
-        if 'password' in self._params and self._params['password'] == '':
-            self._params.pop('password')
+        if 'password' in self._json_params and \
+                self._json_params['password'] == '':
+            self._json_params.pop('password')
 
-        if 'reset' in self._params:
-            self._params.pop('reset', '')
-        user.update(self._params)
+        if 'reset' in self._json_params:
+            self._json_params.pop('reset', '')
+        user.update(self._json_params)
 
         id_field = self._model_class.id_field()
         return JHTTPOk(location=self.request._route_url(
@@ -72,7 +73,7 @@ class UserAttributesView(BaseView):
         kwargs = self.resolve_kwargs(kwargs)
         obj = self._model_class.get_resource(**kwargs)
         obj.update_iterables(
-            self._params, self.attr,
+            self._json_params, self.attr,
             unique=self.unique,
             value_type=self.value_type)
         return JHTTPCreated(resource=getattr(obj, self.attr, None))
@@ -89,14 +90,14 @@ class UserProfileView(BaseView):
     def create(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
         obj = User.get_resource(**kwargs)
-        profile = self._model_class(**self._params).save()
+        profile = self._model_class(**self._json_params).save()
         obj.update({'profile': profile})
         return JHTTPCreated(resource=obj.profile.to_dict())
 
     def update(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
         user = User.get_resource(**kwargs)
-        user.profile.update(self._params)
+        user.profile.update(self._json_params)
 
         id_field = User.id_field()
         return JHTTPOk(location=self.request._route_url(

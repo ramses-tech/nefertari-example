@@ -25,20 +25,20 @@ class StoriesView(BaseView):
     def index(self):
         search_params = []
 
-        if 'q' in self._params:
-            search_params.append(self._params.pop('q'))
+        if 'q' in self._query_params:
+            search_params.append(self._query_params.pop('q'))
 
         self._raw_terms = ' AND '.join(search_params)
 
         return ES('Story').get_collection(
             _raw_terms=self._raw_terms,
-            **self._params)
+            **self._query_params)
 
     def show(self, **kwargs):
         return self.context
 
     def create(self):
-        story = Story(**self._params)
+        story = Story(**self._json_params)
         story.arbitrary_object = ArbitraryObject()
         story.save()
         id_field = Story.id_field()
@@ -48,7 +48,7 @@ class StoriesView(BaseView):
     def update(self, **kwargs):
         id_field = Story.id_field()
         kwargs = self.resolve_kwargs(kwargs)
-        story = Story.get_resource(**kwargs).update(self._params)
+        story = Story.get_resource(**kwargs).update(self._json_params)
         return JHTTPOk(location=self.request._route_url(
             'stories', getattr(story, id_field)))
 
@@ -58,8 +58,8 @@ class StoriesView(BaseView):
         return JHTTPOk()
 
     def delete_many(self):
-        stories = Story.get_collection(**self._params)
-        count = stories.count()
+        stories = Story.get_collection(**self._query_params)
+        count = Story.count(stories)
 
         if self.needs_confirmation():
             return stories
@@ -70,9 +70,10 @@ class StoriesView(BaseView):
             count, self._model_class.__name__))
 
     def update_many(self):
-        _limit = self._params.pop('_limit', None)
-        stories = Story.get_collection(_limit=_limit)
-        Story._update_many(stories, **self._params)
+        self._query_params.process_int_param('_limit', 1000)
+        stories = Story.get_collection(**self._query_params)
+        count = Story.count(stories)
+        Story._update_many(stories, **self._json_params)
 
         return JHTTPOk("Updated %s %s(s) objects" % (
-            stories.count(), self._model_class.__name__))
+            count, self._model_class.__name__))
