@@ -14,7 +14,7 @@ class BaseView(NefertariBaseView):
         super(BaseView, self).__init__(context, request, **kw)
 
         if self.request.method == 'GET':
-            self._params.process_int_param('_limit', 20)
+            self._query_params.process_int_param('_limit', 20)
 
         self._auth = example_api.Settings.asbool('auth')
 

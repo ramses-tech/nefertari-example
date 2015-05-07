@@ -10,6 +10,7 @@ log = logging.getLogger(__name__)
 
 
 class AccountView(BaseView):
+    _model_class = User
 
     def create(self):
         user, created = User.create_account(self._params)

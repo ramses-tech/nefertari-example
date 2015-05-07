@@ -94,10 +94,12 @@ class User(BaseDocument):
 
     settings = eng.DictField()
 
-    uid = property(lambda self: str(self.id))
-
     _auth_fields = ['id', 'username', 'first_name', 'last_name', 'stories']
     _public_fields = ['username']
+
+    @property
+    def uid(self):
+        return str(getattr(self, self.id_field()))
 
     def verify_password(self, password):
         return crypt.check(self.password, password)
@@ -120,7 +122,7 @@ class User(BaseDocument):
 
     @classmethod
     def groupfinder(cls, userid, request):
-        user = cls.get_resource(id=userid)
+        user = cls.get_resource(**{cls.id_field(): userid})
         if user:
             return ['g:%s' % g for g in user.groups]
 
@@ -128,7 +130,7 @@ class User(BaseDocument):
     def get_auth_user(cls, request):
         _id = authenticated_userid(request)
         if _id:
-            return cls.get_resource(id=_id)
+            return cls.get_resource(**{cls.id_field(): _id})
 
     @classmethod
     def get_unauth_user(cls, request):
