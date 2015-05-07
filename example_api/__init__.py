@@ -124,10 +124,10 @@ def includeme(config):
         view='example_api.views.account.TicketAuthenticationView',
         route_name='logout', attr='logout')
 
-    config.add_route('register', '/register')
+    config.add_route('account', '/account')
     config.add_view(
         view='example_api.views.account.TicketAuthenticationView',
-        route_name='register', attr='register', request_method='POST')
+        route_name='account', attr='register', request_method='POST')
 
     create_resources(config)
 
