@@ -7,6 +7,7 @@ from example_api.views.base import BaseView
 
 log = logging.getLogger(__name__)
 
+
 class SView(BaseView):
     def index(self):
         q = self._params.pop('q', None)

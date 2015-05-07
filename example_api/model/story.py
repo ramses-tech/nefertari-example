@@ -44,4 +44,4 @@ class Story(ESBaseDocument):
         ref_column_type=eng.StringField)
 
     _auth_fields = ['id', 'start_date', 'due_date', 'name', 'description', 'progress']
-    _public_fields = ['id', 'name', 'start_date', 'due_date']
+    _public_fields = ['id', 'start_date', 'due_date', 'name']

@@ -11,42 +11,36 @@ $ pip install -r requirements.txt
 $ cp local.ini.template local.ini
 $ nano local.ini
 ```
-The setting `nefertari.engine` can be set to either `nefertari_mongodb` or `nefertari_sqla`
+The setting `nefertari.engine` in local.ini can be set to either `nefertari_mongodb` or `nefertari_sqla`
 
 ## Run
 ```
 $ pserve local.ini
 ```
 
-## Login
-POST `<host>/api/login`
-```json
-{
-    "login": "<config.system.user>",
-    "password": "<config.system.password>"
-}
+### Endpoints
+| uri | method(s) | description |
+|-----|-----------|-------------|
+| `/api/login` | POST | login w/ username, password |
+| `/api/logout` | GET | logout |
+| `/api/account` | POST | signup (then login) w/ username, email, password |
+| `/api/users` | GET, POST, PATCH, DELETE | all users |
+| `/api/users/self` | GET | currently logged-in user |
+| `/api/stories` | GET, POST, PATCH, DELETE | all stories (returns only 100 records to guest users if auth = true) |
+| `/api/s` | GET | endpoint dedicated to search (use with the `?q=` parameter) |
+
+For development purposes, you can use the `_m` parameter to tunnel methods through GET in a browser.
+E.g.
+```
+<host>/api/account?_m=POST&username=<username>&email=<email>&password=<password>
+<host>/api/login?_m=POST&login=<username_or_email>&password=<password>
 ```
 
-or in the browser:
-```
-<host>/api/login?_m=POST&login=<config.system.user>&password=<config.system.password>
-```
-
-## Endpoints
-| uri | description |
-|-----|-------------|
-| `/api/login` | login |
-| `/api/logout` | logout |
-| `/api/users` | all users |
-| `/api/users/self` | currently logged-in user |
-| `/api/stories` | all stories (first 100 records availble to guest users) |
-| `/api/s` | ES endpoint dedicated to search (use with the `?q=` parameter) |
-| `/api/account?_m=POST&email=<email>&password=<password>` | to create a user and login right away |
-
-## Add mock data
+### Adding mock data
+NOTE: set auth = false in local.ini file before executing
 ```
 $ nefertari.post2api -f ./mock/Users.json -u http://localhost:6543/api/users
 $ nefertari.post2api -f ./mock/Profiles.json -u http://localhost:6543/api/users/{username}/profile
 $ nefertari.post2api -f ./mock/Stories.json -u http://localhost:6543/api/stories
 ```
-NOTE: set auth = false in local.ini file before executing
+
