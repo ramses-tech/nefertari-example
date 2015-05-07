@@ -70,7 +70,7 @@ class StoriesView(BaseView):
             count, self._model_class.__name__))
 
     def update_many(self):
-        self._query_params.setdefault('_limit', 1000)
+        self._query_params.process_int_param('_limit', 1000)
         stories = Story.get_collection(**self._query_params)
         count = Story.count(stories)
         Story._update_many(stories, **self._json_params)
