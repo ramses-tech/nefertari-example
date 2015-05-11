@@ -22,7 +22,7 @@ class ArbitraryObject(object):
 class StoriesView(BaseView):
     _model_class = Story
 
-    def index(self):
+    def get_collection_es(self):
         search_params = []
 
         if 'q' in self._query_params:
@@ -33,6 +33,9 @@ class StoriesView(BaseView):
         return ES('Story').get_collection(
             _raw_terms=self._raw_terms,
             **self._query_params)
+
+    def index(self):
+        return self.get_collection_es()
 
     def show(self, **kwargs):
         return self.context
@@ -58,7 +61,9 @@ class StoriesView(BaseView):
         return JHTTPOk()
 
     def delete_many(self):
-        stories = Story.get_collection(**self._query_params)
+        es_stories = self.get_collection_es()
+        stories = Story.filter_objects(
+            es_stories, _limit=self._query_params['_limit'])
         count = Story.count(stories)
 
         if self.needs_confirmation():
@@ -71,7 +76,9 @@ class StoriesView(BaseView):
 
     def update_many(self):
         self._query_params.process_int_param('_limit', 1000)
-        stories = Story.get_collection(**self._query_params)
+        es_stories = self.get_collection_es()
+        stories = Story.filter_objects(
+            es_stories, _limit=self._query_params['_limit'])
         count = Story.count(stories)
         Story._update_many(stories, **self._json_params)
 
