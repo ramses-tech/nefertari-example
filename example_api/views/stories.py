@@ -75,7 +75,6 @@ class StoriesView(BaseView):
             count, self._model_class.__name__))
 
     def update_many(self):
-        self._query_params.process_int_param('_limit', 1000)
         es_stories = self.get_collection_es()
         stories = Story.filter_objects(
             es_stories, _limit=self._query_params['_limit'])
