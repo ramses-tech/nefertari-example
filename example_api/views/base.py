@@ -21,7 +21,5 @@ class BaseView(NefertariBaseView):
         resolved = {}
         for key, value in kwargs.items():
             key = key.split('_', 1)[1]
-            if value == 'self':
-                value = getattr(self.request.user, key)
             resolved[key] = value
         return resolved

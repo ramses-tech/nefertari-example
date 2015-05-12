@@ -1,8 +1,8 @@
 import logging
 
 from nefertari.utils import to_dicts
+from nefertari.elasticsearch import ES
 
-from example_api.model.base import ES
 from example_api.views.base import BaseView
 
 log = logging.getLogger(__name__)

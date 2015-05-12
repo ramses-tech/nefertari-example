@@ -1,12 +1,12 @@
 import logging
 from random import random
 
+from nefertari.elasticsearch import ES
 from nefertari.json_httpexceptions import (
     JHTTPCreated, JHTTPOk)
 
 from example_api.views.base import BaseView
 from example_api.model import Story
-from example_api.model.base import ES
 
 log = logging.getLogger(__name__)
 
