@@ -1,6 +1,5 @@
 import logging
 
-from nefertari.json_httpexceptions import *
 from nefertari.view import BaseView as NefertariBaseView
 from nefertari.engine import JSONEncoder
 import example_api
@@ -22,7 +21,5 @@ class BaseView(NefertariBaseView):
         resolved = {}
         for key, value in kwargs.items():
             key = key.split('_', 1)[1]
-            if value == 'self':
-                value = getattr(self.request.user, key)
             resolved[key] = value
         return resolved

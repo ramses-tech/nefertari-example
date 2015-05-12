@@ -8,7 +8,8 @@ from example_api.model.base import ESBaseDocument
 class Story(ESBaseDocument):
     __tablename__ = 'stories'
 
-    _auth_fields = ['id', 'start_date', 'due_date', 'name', 'description', 'progress']
+    _auth_fields = [
+        'id', 'start_date', 'due_date', 'name', 'description', 'progress']
     _public_fields = ['id', 'start_date', 'due_date', 'name']
 
     id = eng.IdField(primary_key=True)
