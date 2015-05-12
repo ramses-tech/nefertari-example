@@ -51,6 +51,9 @@ class User(AuthModelDefaultMixin, BaseDocument):
     __tablename__ = 'users'
     _nested_relationships = ['stories', 'profile']
 
+    _auth_fields = ['id', 'username', 'first_name', 'last_name', 'stories']
+    _public_fields = ['username']
+
     # `Relationship` - constructor for defining one-to-N relationships
     #
     # This is the place where `ondelete` rules kwargs should be passed.
@@ -90,9 +93,6 @@ class User(AuthModelDefaultMixin, BaseDocument):
         choices=['active', 'inactive', 'blocked'], default='active')
 
     settings = eng.DictField()
-
-    _auth_fields = ['id', 'username', 'first_name', 'last_name', 'stories']
-    _public_fields = ['username']
 
     @classmethod
     def get_unauth_user(cls, request):
