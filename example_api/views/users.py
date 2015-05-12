@@ -29,8 +29,11 @@ class UsersView(BaseView):
         id_field = self._model_class.id_field()
 
         return JHTTPCreated(
-            location=self.request._route_url('users', getattr(user, id_field)),
-            resource=user.to_dict(request=self.request))
+            location=self.request._route_url(
+                'users', getattr(user, id_field)),
+            resource=user.to_dict(),
+            request=self.request,
+        )
 
     def update(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
@@ -92,7 +95,10 @@ class UserProfileView(BaseView):
         obj = User.get_resource(**kwargs)
         profile = self._model_class(**self._json_params).save()
         obj.update({'profile': profile})
-        return JHTTPCreated(resource=obj.profile.to_dict())
+        return JHTTPCreated(
+            resource=obj.profile.to_dict(),
+            request=self.request
+        )
 
     def update(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)

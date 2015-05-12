@@ -45,8 +45,12 @@ class StoriesView(BaseView):
         story.arbitrary_object = ArbitraryObject()
         story.save()
         id_field = Story.id_field()
-        return JHTTPCreated(location=self.request._route_url(
-            'stories', getattr(story, id_field)))
+        return JHTTPCreated(
+            location=self.request._route_url(
+                'stories', getattr(story, id_field)),
+            resource=story.to_dict(),
+            request=self.request,
+        )
 
     def update(self, **kwargs):
         id_field = Story.id_field()
