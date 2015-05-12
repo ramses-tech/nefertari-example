@@ -3,6 +3,7 @@ import mock
 import webtest
 import ConfigParser
 
+
 def bootstrap():
     conf_parser = ConfigParser.SafeConfigParser()
     conf_parser.read('test.ini')
@@ -10,6 +11,7 @@ def bootstrap():
 
     from example_api import main
     return webtest.TestApp(main({}, **conf))
+
 
 class TestView(unittest.TestCase):
     _app = None
@@ -21,15 +23,21 @@ class TestView(unittest.TestCase):
         TestView._app = bootstrap()
         return TestView._app
 
+
 class _ESDocs(list):
     pass
 
+
 patched = [
-            mock.patch('nefertari.elasticsearch.ES.get_collection', return_value=_ESDocs()),
-        ]
+    mock.patch(
+        'nefertari.elasticsearch.ES.get_collection',
+        return_value=_ESDocs()),
+]
+
 
 def setUpPackage():
     [p.start() for p in patched]
+
 
 def tearDownPackage():
     mock.patch.stopall()

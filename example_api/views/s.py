@@ -14,12 +14,6 @@ class SView(BaseView):
         if not q:
             return []
 
-class SView(BaseView):
-    def index(self):
-        q = self._params.pop('q', None)
-        if not q:
-            return []
-
         return to_dicts(ES().get_collection(
             _raw_terms='name:%s*' % (q,), _limit=5,
-            ), _keys=['id', 'name'])
+        ), _keys=['id', 'name'])

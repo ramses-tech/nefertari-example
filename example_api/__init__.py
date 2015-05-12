@@ -153,7 +153,7 @@ def create_resources(config):
 
     root.add('s_one', 's', factory='nefertari.acl.GuestACL')
 
-    story = root.add(
+    root.add(
         'story', 'stories',
         id_name='story_' + Story.pk_field(),
         factory="example_api.acl.StoryACL")

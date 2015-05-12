@@ -4,7 +4,6 @@ from datetime import datetime
 
 import cryptacular.bcrypt
 
-from nefertari.json_httpexceptions import *
 from nefertari import engine as eng
 from nefertari.engine import BaseDocument as NefertariBaseDocument
 from nefertari.authentication.models import AuthModelDefaultMixin
@@ -112,7 +111,7 @@ class User(AuthModelDefaultMixin, BaseDocument):
             return (request and
                     request.user and
                     request.user.username == self.username and
-                    not '__nested' in kw)
+                    '__nested' not in kw)
 
         if is_self():
             _d = super(NefertariBaseDocument, self).to_dict(**kw)

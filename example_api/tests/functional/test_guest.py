@@ -1,19 +1,23 @@
 from example_api.tests import TestView
-from example_api.model import *
+from example_api.model import User
+
 
 class TestGuest(TestView):
     def setUp(self):
-        self.app #this bootstraps
+        self.app  # this bootstraps
         self.tearDown()
 
-        self.user = User(username='test_user', password='123', email='test_user@email.com').save()
+        self.user = User(
+            username='test_user',
+            password='123',
+            email='test_user@email.com').save()
 
     def tearDown(self):
         self.app.post('/logout')
 
         User.objects.delete()
 
-    #users
+    # users
     def test_user_index(self):
         self.app.get('/users', status=403)
 
@@ -24,8 +28,7 @@ class TestGuest(TestView):
         self.app.delete('/users/test_user', status=403)
 
     def test_user_show(self):
-        resp = self.app.get('/users/test_user', status=200)
-        # self.assertEqual(resp.json_body, {})
+        self.app.get('/users/test_user', status=200)
 
     def test_user_update(self):
-        response = self.app.put('/users/test_user', status=403)
+        self.app.put('/users/test_user', status=403)

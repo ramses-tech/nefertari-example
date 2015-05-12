@@ -1,6 +1,6 @@
 import logging
-from pyramid.security import *
-from nefertari.json_httpexceptions import *
+from nefertari.json_httpexceptions import (
+    JHTTPCreated, JHTTPOk)
 
 from example_api.views.base import BaseView
 from example_api.model import User, Profile

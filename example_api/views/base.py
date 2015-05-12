@@ -1,6 +1,5 @@
 import logging
 
-from nefertari.json_httpexceptions import *
 from nefertari.view import BaseView as NefertariBaseView
 from nefertari.engine import JSONEncoder
 import example_api
