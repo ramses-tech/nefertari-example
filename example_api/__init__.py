@@ -138,7 +138,7 @@ def create_resources(config):
 
     user = root.add(
         'user', 'users',
-        id_name='user_' + User.id_field(),
+        id_name='user_' + User.pk_field(),
         factory="example_api.acl.UserACL")
 
     user.add('group', 'groups',
@@ -155,7 +155,7 @@ def create_resources(config):
 
     story = root.add(
         'story', 'stories',
-        id_name='story_' + Story.id_field(),
+        id_name='story_' + Story.pk_field(),
         factory="example_api.acl.StoryACL")
 
 

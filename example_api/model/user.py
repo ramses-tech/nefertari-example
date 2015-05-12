@@ -96,13 +96,13 @@ class User(AuthModelDefaultMixin, BaseDocument):
 
     @classmethod
     def get_unauth_user(cls, request):
-        id_field = cls.id_field()
-        arg = request.matchdict.get('user_' + id_field)
+        pk_field = cls.pk_field()
+        arg = request.matchdict.get('user_' + pk_field)
 
         if arg == 'self' or not arg:
             return cls.get_resource(username='system')
 
-        return cls.get_resource(**{id_field: arg})
+        return cls.get_resource(**{pk_field: arg})
 
     def to_dict(self, **kw):
 
@@ -119,7 +119,7 @@ class User(AuthModelDefaultMixin, BaseDocument):
         else:
             _d = super(User, self).to_dict(**kw)
 
-        _d['id'] = _d.get(User.id_field(), None)
+        _d['id'] = _d.get(User.pk_field(), None)
         _d['_id'] = self.id
 
         _d.pop('password', None)

@@ -26,10 +26,10 @@ class UsersView(BaseView):
         self._json_params.setdefault('groups', ['user'])
 
         user = self._model_class(**self._json_params).save()
-        id_field = self._model_class.id_field()
+        pk_field = self._model_class.pk_field()
 
         return JHTTPCreated(
-            location=self.request._route_url('users', getattr(user, id_field)),
+            location=self.request._route_url('users', getattr(user, pk_field)),
             resource=user.to_dict(request=self.request))
 
     def update(self, **kwargs):
@@ -45,9 +45,9 @@ class UsersView(BaseView):
             self._json_params.pop('reset', '')
         user.update(self._json_params)
 
-        id_field = self._model_class.id_field()
+        pk_field = self._model_class.pk_field()
         return JHTTPOk(location=self.request._route_url(
-            'users', getattr(user, id_field)))
+            'users', getattr(user, pk_field)))
 
     def delete(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
@@ -99,7 +99,7 @@ class UserProfileView(BaseView):
         user = User.get_resource(**kwargs)
         user.profile.update(self._json_params)
 
-        id_field = User.id_field()
+        pk_field = User.pk_field()
         return JHTTPOk(location=self.request._route_url(
             'user:profile',
-            **{'user_{}'.format(id_field): getattr(user, id_field)}))
+            **{'user_{}'.format(pk_field): getattr(user, pk_field)}))

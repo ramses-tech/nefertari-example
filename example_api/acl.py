@@ -8,11 +8,11 @@ from example_api.model import User, Story
 class BaseACL(NefertariBaseACL):
     def __init__(self, request):
         super(BaseACL, self).__init__(request)
-        id_field = User.id_field()
-        arg = request.matchdict.get('user_' + id_field)
+        pk_field = User.pk_field()
+        arg = request.matchdict.get('user_' + pk_field)
 
         if arg and arg != 'self':
-            self.user = User.get(**{id_field: arg, '__raise': True})
+            self.user = User.get(**{pk_field: arg, '__raise': True})
         else:
             self.user = request.user
 

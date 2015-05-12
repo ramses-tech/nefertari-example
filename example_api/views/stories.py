@@ -44,16 +44,16 @@ class StoriesView(BaseView):
         story = Story(**self._json_params)
         story.arbitrary_object = ArbitraryObject()
         story.save()
-        id_field = Story.id_field()
+        pk_field = Story.pk_field()
         return JHTTPCreated(location=self.request._route_url(
-            'stories', getattr(story, id_field)))
+            'stories', getattr(story, pk_field)))
 
     def update(self, **kwargs):
-        id_field = Story.id_field()
+        pk_field = Story.pk_field()
         kwargs = self.resolve_kwargs(kwargs)
         story = Story.get_resource(**kwargs).update(self._json_params)
         return JHTTPOk(location=self.request._route_url(
-            'stories', getattr(story, id_field)))
+            'stories', getattr(story, pk_field)))
 
     def delete(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
