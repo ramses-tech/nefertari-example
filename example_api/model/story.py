@@ -7,7 +7,10 @@ from example_api.model.base import ESBaseDocument
 
 class Story(ESBaseDocument):
     __tablename__ = 'stories'
-    # _nested_relationships = ['user']
+
+    _auth_fields = [
+        'id', 'start_date', 'due_date', 'name', 'description', 'progress']
+    _public_fields = ['id', 'start_date', 'due_date', 'name']
 
     id = eng.IdField(primary_key=True)
     timestamp = eng.DateTimeField(default=datetime.utcnow)
@@ -42,6 +45,3 @@ class Story(ESBaseDocument):
     owner_id = eng.ForeignKeyField(
         ref_document='User', ref_column='users.username',
         ref_column_type=eng.StringField)
-
-    _auth_fields = ['id', 'start_date', 'due_date', 'name', 'description', 'progress']
-    _public_fields = ['id', 'start_date', 'due_date', 'name']
