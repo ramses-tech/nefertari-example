@@ -52,7 +52,7 @@ def bootstrap(config):
 
     if Settings.asbool('auth', False):
         config.add_request_method(
-            'example_api.model.User.authuser_by_userid', 'user', reify=True)
+            'example_api.model.User.get_authuser_by_userid', 'user', reify=True)
     else:
         log.warning('*** USER AUTHENTICATION IS DISABLED ! ***')
         config.add_request_method(
@@ -89,7 +89,7 @@ def main(global_config, **settings):
     from example_api.model import User
     authn_policy = AuthTktAuthenticationPolicy(
         Settings['auth_tkt_secret'],
-        callback=User.groups_by_userid,
+        callback=User.get_groups_by_userid,
         hashalg='sha512',
         cookie_name='example_api_auth_tkt',
         http_only=True,
