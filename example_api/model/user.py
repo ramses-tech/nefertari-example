@@ -14,7 +14,7 @@ crypt = cryptacular.bcrypt.BCRYPTPasswordManager()
 log = logging.getLogger(__name__)
 
 
-def crypt_password(password):
+def encrypt_password(password):
     """ Crypt :password: if it isn't crypted. """
     if password and not crypt.match(password):
         password = unicode(crypt.encode(password))
@@ -78,7 +78,7 @@ class User(AuthModelDefaultMixin, BaseDocument):
         unique=True, required=True,
         processors=[lower_strip])
     password = eng.StringField(
-        min_length=3, required=True, processors=[crypt_password])
+        min_length=3, required=True, processors=[encrypt_password])
 
     first_name = eng.StringField(max_length=50, default='')
     last_name = eng.StringField(max_length=50, default='')
