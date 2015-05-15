@@ -48,7 +48,7 @@ class User(AuthModelDefaultMixin, BaseDocument):
         ordering=['-timestamp']
     )
     __tablename__ = 'users'
-    _nested_relationships = ['stories', 'profile']
+    _nested_relationships = ['profile']
 
     _auth_fields = ['id', 'username', 'first_name', 'last_name', 'stories']
     _public_fields = ['username']
