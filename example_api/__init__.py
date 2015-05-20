@@ -101,6 +101,9 @@ def main(global_config, **settings):
     from nefertari.engine import setup_database
     setup_database(config)
 
+    from nefertari.elasticsearch import ES
+    ES.setup_mappings()
+
     config.commit()
     initialize()
 
