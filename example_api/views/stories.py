@@ -59,6 +59,9 @@ class StoriesView(BaseView):
         return JHTTPOk(location=self.request._route_url(
             'stories', getattr(story, pk_field)))
 
+    def replace(self, **kwargs):
+        return self.update(**kwargs)
+
     def delete(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
         Story._delete(**kwargs)
