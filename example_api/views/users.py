@@ -52,6 +52,9 @@ class UsersView(BaseView):
         return JHTTPOk(location=self.request._route_url(
             'users', getattr(user, pk_field)))
 
+    def replace(self, **kwargs):
+        return self.update(**kwargs)
+
     def delete(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
         self._model_class._delete(**kwargs)
@@ -109,3 +112,6 @@ class UserProfileView(BaseView):
         return JHTTPOk(location=self.request._route_url(
             'user:profile',
             **{'user_{}'.format(pk_field): getattr(user, pk_field)}))
+
+    def replace(self, **kwargs):
+        return self.update(**kwargs)
