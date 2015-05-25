@@ -69,6 +69,7 @@ class StoriesView(BaseView):
         stories = Story.filter_objects(
             es_stories, _limit=self._query_params['_limit'])
         count = Story.count(stories)
+
         if self.needs_confirmation():
             return stories
 
