@@ -45,3 +45,6 @@ class Story(ESBaseDocument):
     owner_id = eng.ForeignKeyField(
         ref_document='User', ref_column='users.username',
         ref_column_type=eng.StringField)
+    assignee_id = eng.ForeignKeyField(
+        ref_document='User', ref_column='users.username',
+        ref_column_type=eng.StringField)
