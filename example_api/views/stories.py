@@ -66,8 +66,7 @@ class StoriesView(BaseView):
 
     def delete_many(self):
         es_stories = self.get_collection_es()
-        stories = Story.filter_objects(
-            es_stories, _limit=self._query_params['_limit'])
+        stories = Story.filter_objects(es_stories)
         count = Story.count(stories)
 
         if self.needs_confirmation():
@@ -80,8 +79,7 @@ class StoriesView(BaseView):
 
     def update_many(self):
         es_stories = self.get_collection_es()
-        stories = Story.filter_objects(
-            es_stories, _limit=self._query_params['_limit'])
+        stories = Story.filter_objects(es_stories)
         count = Story.count(stories)
         Story._update_many(stories, **self._json_params)
 
