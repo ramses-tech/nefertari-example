@@ -14,19 +14,19 @@ crypt = cryptacular.bcrypt.BCRYPTPasswordManager()
 log = logging.getLogger(__name__)
 
 
-def encrypt_password(password):
-    """ Crypt :password: if it isn't crypted. """
-    if password and not crypt.match(password):
-        password = unicode(crypt.encode(password))
-    return password
+def encrypt_password(instance, new_value):
+    """ Crypt :new_value: if it isn't crypted. """
+    if new_value and not crypt.match(new_value):
+        new_value = unicode(crypt.encode(new_value))
+    return new_value
 
 
-def lower_strip(value):
-    return (value or '').lower().strip()
+def lower_strip(instance, new_value):
+    return (new_value or '').lower().strip()
 
 
-def random_uuid(value):
-    return value or uuid.uuid4().hex
+def random_uuid(instance, new_value):
+    return new_value or uuid.uuid4().hex
 
 
 class Profile(BaseDocument):
