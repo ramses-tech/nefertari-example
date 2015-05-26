@@ -186,6 +186,7 @@ def initialize():
             user.save()
             changed = True
         if changed:
+            user.clean(force_all=True)
             transaction.commit()
 
     except KeyError as e:
