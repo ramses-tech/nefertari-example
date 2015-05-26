@@ -17,10 +17,10 @@ class Story(ESBaseDocument):
     creation_date = eng.DateTimeField(default=datetime.utcnow)
     start_date = eng.DateTimeField(default=datetime.utcnow)
     due_date = eng.DateTimeField()
-    name = eng.StringField()
-    description = eng.TextField()
-    progress = eng.FloatField(default=0)
-    completed = eng.BooleanField()
+    name = eng.StringField(required=True)
+    description = eng.TextField(required=True)
+    progress = eng.FloatField(default=0, required=True)
+    completed = eng.BooleanField(required=True)
 
     signs_number = eng.BigIntegerField()
     valid_date = eng.DateField()
@@ -43,5 +43,8 @@ class Story(ESBaseDocument):
     # `ondelete` rules may be kept in both fields with no side-effects
     # when switching engine.
     owner_id = eng.ForeignKeyField(
+        ref_document='User', ref_column='users.username',
+        ref_column_type=eng.StringField)
+    assignee_id = eng.ForeignKeyField(
         ref_document='User', ref_column='users.username',
         ref_column_type=eng.StringField)
