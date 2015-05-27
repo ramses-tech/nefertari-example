@@ -43,7 +43,7 @@ class StoriesView(BaseView):
     def create(self):
         story = self._model_class(**self._json_params)
         story.arbitrary_object = ArbitraryObject()
-        story.save()
+        story.save(refresh_index=self.refresh_index)
         pk_field = self._model_class.pk_field()
         return JHTTPCreated(
             location=self.request._route_url(
@@ -56,7 +56,9 @@ class StoriesView(BaseView):
         pk_field = self._model_class.pk_field()
         kwargs = self.resolve_kwargs(kwargs)
         story = self._model_class.get_resource(**kwargs)
-        story = story.update(self._json_params)
+        story = story.update(
+            self._json_params,
+            refresh_index=self.refresh_index)
         return JHTTPOk(location=self.request._route_url(
             'stories', getattr(story, pk_field)))
 
@@ -66,7 +68,7 @@ class StoriesView(BaseView):
     def delete(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
         story = self._model_class.get_resource(**kwargs)
-        story.delete()
+        story.delete(refresh_index=self.refresh_index)
         return JHTTPOk()
 
     def delete_many(self):
@@ -78,7 +80,8 @@ class StoriesView(BaseView):
         if self.needs_confirmation():
             return stories
 
-        self._model_class._delete_many(stories)
+        self._model_class._delete_many(
+            stories, refresh_index=self.refresh_index)
 
         return JHTTPOk("Delete %s %s(s) objects" % (
             count, self._model_class.__name__))
@@ -88,7 +91,9 @@ class StoriesView(BaseView):
         stories = self._model_class.filter_objects(
             es_stories, _limit=self._query_params['_limit'])
         count = self._model_class.count(stories)
-        self._model_class._update_many(stories, **self._json_params)
+        self._model_class._update_many(
+            stories, refresh_index=self.refresh_index,
+            **self._json_params)
 
         return JHTTPOk("Updated %s %s(s) objects" % (
             count, self._model_class.__name__))
