@@ -57,7 +57,8 @@ class UsersView(BaseView):
 
     def delete(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
-        self._model_class._delete(**kwargs)
+        story = self._model_class.get_resource(**kwargs)
+        story.delete()
         return JHTTPOk()
 
 

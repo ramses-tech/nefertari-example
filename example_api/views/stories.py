@@ -30,7 +30,7 @@ class StoriesView(BaseView):
 
         self._raw_terms = ' AND '.join(search_params)
 
-        return ES('Story').get_collection(
+        return ES(self._model_class.__name__).get_collection(
             _raw_terms=self._raw_terms,
             **self._query_params)
 
@@ -41,10 +41,10 @@ class StoriesView(BaseView):
         return self.context
 
     def create(self):
-        story = Story(**self._json_params)
+        story = self._model_class(**self._json_params)
         story.arbitrary_object = ArbitraryObject()
         story.save()
-        pk_field = Story.pk_field()
+        pk_field = self._model_class.pk_field()
         return JHTTPCreated(
             location=self.request._route_url(
                 'stories', getattr(story, pk_field)),
@@ -53,9 +53,10 @@ class StoriesView(BaseView):
         )
 
     def update(self, **kwargs):
-        pk_field = Story.pk_field()
+        pk_field = self._model_class.pk_field()
         kwargs = self.resolve_kwargs(kwargs)
-        story = Story.get_resource(**kwargs).update(self._json_params)
+        story = self._model_class.get_resource(**kwargs)
+        story = story.update(self._json_params)
         return JHTTPOk(location=self.request._route_url(
             'stories', getattr(story, pk_field)))
 
@@ -64,29 +65,30 @@ class StoriesView(BaseView):
 
     def delete(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
-        Story._delete(**kwargs)
+        story = self._model_class.get_resource(**kwargs)
+        story.delete()
         return JHTTPOk()
 
     def delete_many(self):
         es_stories = self.get_collection_es()
-        stories = Story.filter_objects(
+        stories = self._model_class.filter_objects(
             es_stories, _limit=self._query_params['_limit'])
-        count = Story.count(stories)
+        count = self._model_class.count(stories)
 
         if self.needs_confirmation():
             return stories
 
-        Story._delete_many(stories)
+        self._model_class._delete_many(stories)
 
         return JHTTPOk("Delete %s %s(s) objects" % (
             count, self._model_class.__name__))
 
     def update_many(self):
         es_stories = self.get_collection_es()
-        stories = Story.filter_objects(
+        stories = self._model_class.filter_objects(
             es_stories, _limit=self._query_params['_limit'])
-        count = Story.count(stories)
-        Story._update_many(stories, **self._json_params)
+        count = self._model_class.count(stories)
+        self._model_class._update_many(stories, **self._json_params)
 
         return JHTTPOk("Updated %s %s(s) objects" % (
             count, self._model_class.__name__))
