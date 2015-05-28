@@ -22,7 +22,9 @@ def encrypt_password(instance, new_value):
 
 
 def lower_strip(instance, new_value):
-    return (new_value or '').lower().strip()
+    if new_value is None:
+        return new_value
+    return new_value.lower().strip()
 
 
 def random_uuid(instance, new_value):
