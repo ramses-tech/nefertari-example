@@ -17,12 +17,6 @@ class BaseView(NefertariBaseView):
 
         self._auth = example_api.Settings.asbool('auth')
 
-        if '_refresh_index' in self._query_params:
-            self.refresh_index = self._query_params.asbool(
-                '_refresh_index', pop=True)
-        else:
-            self.refresh_index = None
-
     def resolve_kwargs(self, kwargs):
         resolved = {}
         for key, value in kwargs.items():
