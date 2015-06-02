@@ -80,13 +80,14 @@ class User(AuthModelDefaultMixin, BaseDocument):
 
     username = eng.StringField(
         primary_key=True, min_length=1, max_length=50, unique=True,
-        processors=[random_uuid, lower_strip])
+        before_validation=[random_uuid, lower_strip])
 
     email = eng.StringField(
         unique=True, required=True,
-        processors=[lower_strip])
+        before_validation=[lower_strip])
     password = eng.StringField(
-        min_length=3, required=True, processors=[encrypt_password])
+        min_length=3, required=True,
+        after_validation=[encrypt_password])
 
     first_name = eng.StringField(max_length=50, default='')
     last_name = eng.StringField(max_length=50, default='')
