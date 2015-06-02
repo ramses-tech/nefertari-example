@@ -81,7 +81,6 @@ class User(AuthModelDefaultMixin, BaseDocument):
     username = eng.StringField(
         primary_key=True, min_length=1, max_length=50, unique=True,
         before_validation=[random_uuid, lower_strip])
-
     email = eng.StringField(
         unique=True, required=True,
         before_validation=[lower_strip])

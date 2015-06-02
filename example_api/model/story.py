@@ -19,7 +19,7 @@ class Story(ESBaseDocument):
     due_date = eng.DateTimeField()
     name = eng.StringField(required=True)
     description = eng.TextField(required=True)
-    progress = eng.FloatField(default=0, required=True)
+    progress = eng.FloatField(default=0)
     completed = eng.BooleanField()
 
     signs_number = eng.BigIntegerField()
