@@ -6,7 +6,7 @@ from nefertari.json_httpexceptions import (
     JHTTPCreated, JHTTPOk)
 
 from example_api.views.base import BaseView
-from example_api.model import Story
+from example_api.models import Story
 
 log = logging.getLogger(__name__)
 
