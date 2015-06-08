@@ -6,7 +6,7 @@ from nefertari.json_httpexceptions import (
     JHTTPCreated, JHTTPOk)
 
 from example_api.views.base import BaseView
-from example_api.model import Story
+from example_api.models import Story
 
 log = logging.getLogger(__name__)
 
@@ -45,6 +45,7 @@ class StoriesView(BaseView):
         story.arbitrary_object = ArbitraryObject()
         story.save(refresh_index=self.refresh_index)
         pk_field = self._model_class.pk_field()
+
         return JHTTPCreated(
             location=self.request._route_url(
                 'stories', getattr(story, pk_field)),
@@ -59,6 +60,7 @@ class StoriesView(BaseView):
         story = story.update(
             self._json_params,
             refresh_index=self.refresh_index)
+
         return JHTTPOk(location=self.request._route_url(
             'stories', getattr(story, pk_field)))
 
@@ -69,6 +71,7 @@ class StoriesView(BaseView):
         kwargs = self.resolve_kwargs(kwargs)
         story = self._model_class.get_resource(**kwargs)
         story.delete(refresh_index=self.refresh_index)
+
         return JHTTPOk()
 
     def delete_many(self):

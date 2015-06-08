@@ -3,7 +3,7 @@ from nefertari.json_httpexceptions import (
     JHTTPCreated, JHTTPOk)
 
 from example_api.views.base import BaseView
-from example_api.model import User, Profile
+from example_api.models import User, Profile
 
 
 log = logging.getLogger(__name__)
