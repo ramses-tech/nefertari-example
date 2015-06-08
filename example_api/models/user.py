@@ -8,7 +8,7 @@ from nefertari import engine as eng
 from nefertari.engine import BaseDocument as NefertariBaseDocument
 from nefertari.authentication.models import AuthModelDefaultMixin
 
-from example_api.model.base import BaseDocument
+from example_api.models.base import BaseDocument
 
 crypt = cryptacular.bcrypt.BCRYPTPasswordManager()
 log = logging.getLogger(__name__)
