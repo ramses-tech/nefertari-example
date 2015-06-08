@@ -52,7 +52,7 @@ def bootstrap(config):
 
     if Settings.asbool('auth', False):
         config.add_request_method(
-            'example_api.model.User.get_authuser_by_userid', 'user', reify=True)
+            'example_api.models.User.get_authuser_by_userid', 'user', reify=True)
     else:
         log.warning('*** USER AUTHENTICATION IS DISABLED ! ***')
         config.add_request_method(
