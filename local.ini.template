@@ -35,6 +35,7 @@ elasticsearch.index_name = example_api
 elasticsearch.index.disable = false
 elasticsearch.chunk_size = 1000
 elasticsearch.enable_refresh_query = true
+elasticsearch.enable_aggregations = true
 
 cors.enable = false
 cors.allow_origins = %(base_url)s
