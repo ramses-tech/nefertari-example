@@ -21,7 +21,7 @@ class ArbitraryObject(object):
 
 
 class StoriesView(ESAggregationMixin, BaseView):
-    _model_class = Story
+    Model = Story
 
     def get_collection_es(self):
         search_params = []
@@ -31,7 +31,7 @@ class StoriesView(ESAggregationMixin, BaseView):
 
         self._raw_terms = ' AND '.join(search_params)
 
-        return ES(self._model_class.__name__).get_collection(
+        return ES(self.Model.__name__).get_collection(
             _raw_terms=self._raw_terms,
             **self._query_params)
 
@@ -45,10 +45,10 @@ class StoriesView(ESAggregationMixin, BaseView):
         return self.context
 
     def create(self):
-        story = self._model_class(**self._json_params)
+        story = self.Model(**self._json_params)
         story.arbitrary_object = ArbitraryObject()
         story.save(refresh_index=self.refresh_index)
-        pk_field = self._model_class.pk_field()
+        pk_field = self.Model.pk_field()
 
         return JHTTPCreated(
             location=self.request._route_url(
@@ -58,9 +58,9 @@ class StoriesView(ESAggregationMixin, BaseView):
         )
 
     def update(self, **kwargs):
-        pk_field = self._model_class.pk_field()
+        pk_field = self.Model.pk_field()
         kwargs = self.resolve_kwargs(kwargs)
-        story = self._model_class.get_resource(**kwargs)
+        story = self.Model.get_resource(**kwargs)
         story = story.update(
             self._json_params,
             refresh_index=self.refresh_index)
@@ -73,34 +73,34 @@ class StoriesView(ESAggregationMixin, BaseView):
 
     def delete(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
-        story = self._model_class.get_resource(**kwargs)
+        story = self.Model.get_resource(**kwargs)
         story.delete(refresh_index=self.refresh_index)
 
         return JHTTPOk()
 
     def delete_many(self):
         es_stories = self.get_collection_es()
-        stories = self._model_class.filter_objects(
+        stories = self.Model.filter_objects(
             es_stories, _limit=self._query_params['_limit'])
-        count = self._model_class.count(stories)
+        count = self.Model.count(stories)
 
         if self.needs_confirmation():
             return stories
 
-        self._model_class._delete_many(
+        self.Model._delete_many(
             stories, refresh_index=self.refresh_index)
 
         return JHTTPOk("Delete %s %s(s) objects" % (
-            count, self._model_class.__name__))
+            count, self.Model.__name__))
 
     def update_many(self):
         es_stories = self.get_collection_es()
-        stories = self._model_class.filter_objects(
+        stories = self.Model.filter_objects(
             es_stories, _limit=self._query_params['_limit'])
-        count = self._model_class.count(stories)
-        self._model_class._update_many(
+        count = self.Model.count(stories)
+        self.Model._update_many(
             stories, refresh_index=self.refresh_index,
             **self._json_params)
 
         return JHTTPOk("Updated %s %s(s) objects" % (
-            count, self._model_class.__name__))
+            count, self.Model.__name__))
