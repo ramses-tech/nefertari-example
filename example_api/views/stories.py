@@ -45,17 +45,10 @@ class StoriesView(ESAggregationMixin, BaseView):
         return self.context
 
     def create(self):
-        story = self.Model(**self._json_params)
-        story.arbitrary_object = ArbitraryObject()
-        story.save(refresh_index=self.refresh_index)
-        pk_field = self.Model.pk_field()
-
-        return JHTTPCreated(
-            location=self.request._route_url(
-                'stories', getattr(story, pk_field)),
-            resource=story.to_dict(),
-            request=self.request,
-        )
+        story = self.Model(
+            arbitrary_object=ArbitraryObject(),
+            **self._json_params)
+        return story.save(refresh_index=self.refresh_index)
 
     def update(self, **kwargs):
         pk_field = self.Model.pk_field()

@@ -24,17 +24,8 @@ class UsersView(BaseView):
 
     def create(self):
         self._json_params.setdefault('groups', ['user'])
-
         user = self.Model(**self._json_params)
-        user = user.save(refresh_index=self.refresh_index)
-        pk_field = self.Model.pk_field()
-
-        return JHTTPCreated(
-            location=self.request._route_url(
-                'users', getattr(user, pk_field)),
-            resource=user.to_dict(),
-            request=self.request,
-        )
+        return user.save(refresh_index=self.refresh_index)
 
     def update(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
@@ -85,7 +76,7 @@ class UserAttributesView(BaseView):
             unique=self.unique,
             value_type=self.value_type,
             refresh_index=self.refresh_index)
-        return JHTTPCreated(resource=getattr(obj, self.attr, None))
+        return getattr(obj, self.attr, None)
 
 
 class UserProfileView(BaseView):
@@ -102,10 +93,7 @@ class UserProfileView(BaseView):
         profile = self.Model(**self._json_params)
         profile = profile.save(refresh_index=self.refresh_index)
         obj.update({'profile': profile}, refresh_index=self.refresh_index)
-        return JHTTPCreated(
-            resource=obj.profile.to_dict(),
-            request=self.request
-        )
+        return obj.profile
 
     def update(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
