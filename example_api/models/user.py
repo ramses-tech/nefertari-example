@@ -17,7 +17,7 @@ log = logging.getLogger(__name__)
 def encrypt_password(instance, new_value):
     """ Crypt :new_value: if it isn't crypted. """
     if new_value and not crypt.match(new_value):
-        new_value = unicode(crypt.encode(new_value))
+        new_value = str(crypt.encode(new_value))
     return new_value
 
 
