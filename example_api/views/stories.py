@@ -2,7 +2,6 @@ import logging
 from random import random
 
 from nefertari.elasticsearch import ES
-from nefertari.view import ESAggregationMixin
 
 from example_api.views.base import BaseView
 from example_api.models import Story
@@ -18,7 +17,7 @@ class ArbitraryObject(object):
         return dict(attr=self.attr)
 
 
-class StoriesView(ESAggregationMixin, BaseView):
+class StoriesView(BaseView):
     Model = Story
 
     def get_collection_es(self):
@@ -34,10 +33,7 @@ class StoriesView(ESAggregationMixin, BaseView):
             **self._query_params)
 
     def index(self):
-        try:
-            return self.aggregate()
-        except KeyError:
-            return self.get_collection_es()
+        return self.get_collection_es()
 
     def show(self, **kwargs):
         return self.context
@@ -77,6 +73,7 @@ class StoriesView(ESAggregationMixin, BaseView):
         es_stories = self.get_collection_es()
         stories = self.Model.filter_objects(
             es_stories, _limit=self._query_params['_limit'])
+
         return self.Model._update_many(
             stories, refresh_index=self.refresh_index,
             **self._json_params)
