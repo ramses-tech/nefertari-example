@@ -1,6 +1,4 @@
 import logging
-from nefertari.json_httpexceptions import (
-    JHTTPCreated, JHTTPOk)
 
 from example_api.views.base import BaseView
 from example_api.models import User, Profile
@@ -38,11 +36,8 @@ class UsersView(BaseView):
 
         if 'reset' in self._json_params:
             self._json_params.pop('reset', '')
-        user.update(self._json_params, refresh_index=self.refresh_index)
-
-        pk_field = self.Model.pk_field()
-        return JHTTPOk(location=self.request._route_url(
-            'users', getattr(user, pk_field)))
+        return user.update(
+            self._json_params, refresh_index=self.refresh_index)
 
     def replace(self, **kwargs):
         return self.update(**kwargs)
@@ -51,7 +46,6 @@ class UsersView(BaseView):
         kwargs = self.resolve_kwargs(kwargs)
         story = self.Model.get_resource(**kwargs)
         story.delete(refresh_index=self.refresh_index)
-        return JHTTPOk()
 
 
 class UserAttributesView(BaseView):
@@ -98,13 +92,9 @@ class UserProfileView(BaseView):
     def update(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
         user = User.get_resource(**kwargs)
-        user.profile.update(
-            self._json_params, refresh_index=self.refresh_index)
-
-        pk_field = User.pk_field()
-        return JHTTPOk(location=self.request._route_url(
-            'user:profile',
-            **{'user_{}'.format(pk_field): getattr(user, pk_field)}))
+        return user.profile.update(
+            self._json_params,
+            refresh_index=self.refresh_index)
 
     def replace(self, **kwargs):
         return self.update(**kwargs)
