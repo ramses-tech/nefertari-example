@@ -45,9 +45,8 @@ class StoriesView(ESAggregationMixin, BaseView):
         return self.context
 
     def create(self):
-        story = self.Model(
-            arbitrary_object=ArbitraryObject(),
-            **self._json_params)
+        story = self.Model(**self._json_params)
+        story.arbitrary_object = ArbitraryObject()
         return story.save(refresh_index=self.refresh_index)
 
     def update(self, **kwargs):
