@@ -25,18 +25,22 @@ class UserACL(BaseACL):
     Grants access:
         * collection 'create' to everyone.
         * item 'update', 'delete' to owner.
-        * item 'index', 'show' to everyone.
+        * item 'index', 'show', 'collection_options', 'item_options'
+          to everyone.
     """
     __context_class__ = User
 
     def __init__(self, request):
         super(UserACL, self).__init__(request)
-        self.acl = (Allow, Everyone, ['index', 'create', 'show'])
+        self.acl = (
+            Allow, Everyone, ['index', 'create', 'show', 'collection_options',
+                              'item_options'])
 
     def context_acl(self, context):
         return [
             (Allow, str(context.id), 'update'),
-            (Allow, Everyone, ['index', 'show']),
+            (Allow, Everyone, ['index', 'show', 'collection_options',
+                               'item_options']),
             (Deny, str(context.id), 'delete'),
         ]
 
@@ -56,12 +60,15 @@ class StoryACL(BaseACL):
 
     def __init__(self, request):
         super(StoryACL, self).__init__(request)
-        self.acl = (Allow, Everyone, ['index', 'show'])
+        self.acl = (
+            Allow, Everyone, ['index', 'show', 'collection_options',
+                              'item_options'])
 
     def context_acl(self, context):
         return [
             (Allow, 'g:admin', ALL_PERMISSIONS),
-            (Allow, Everyone, ['index', 'show']),
+            (Allow, Everyone, ['index', 'show', 'collection_options',
+                               'item_options']),
         ]
 
     def __getitem__(self, key):
