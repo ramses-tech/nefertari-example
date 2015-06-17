@@ -12,7 +12,7 @@ class BaseView(NefertariBaseView):
         BaseView._json_encoder = JSONEncoder
         super(BaseView, self).__init__(context, request, **kw)
 
-        if self.request.method == 'GET':
+        if self.request.method.upper() in ['GET', 'HEAD']:
             self._query_params.process_int_param('_limit', 20)
 
         self._auth = example_api.Settings.asbool('auth')
