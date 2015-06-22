@@ -12,7 +12,7 @@ class Story(ESBaseDocument):
         'id', 'start_date', 'due_date', 'name', 'description', 'progress']
     _public_fields = ['id', 'start_date', 'due_date', 'name']
 
-    updated_at = eng.DateTimeField()
+    updated_at = eng.DateTimeField(onupdate=datetime.utcnow)
     created_at = eng.DateTimeField(default=datetime.utcnow)
 
     id = eng.IdField(primary_key=True)
