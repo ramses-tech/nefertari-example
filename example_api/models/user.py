@@ -76,6 +76,9 @@ class User(AuthModelDefaultMixin, BaseDocument):
         document='Profile', backref_name='user', uselist=False)
 
     id = eng.IdField()
+    updated_at = eng.DateTimeField()
+    created_at = eng.DateTimeField(default=datetime.utcnow)
+
     timestamp = eng.DateTimeField(default=datetime.utcnow)
 
     username = eng.StringField(
