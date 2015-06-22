@@ -35,6 +35,8 @@ class Profile(BaseDocument):
     __tablename__ = 'profiles'
 
     id = eng.IdField(primary_key=True)
+    updated_at = eng.DateTimeField()
+    created_at = eng.DateTimeField(default=datetime.utcnow)
     user_id = eng.ForeignKeyField(
         ref_document='User',
         ref_column='users.username',
