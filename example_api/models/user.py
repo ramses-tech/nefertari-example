@@ -35,6 +35,8 @@ class Profile(BaseDocument):
     __tablename__ = 'profiles'
 
     id = eng.IdField(primary_key=True)
+    updated_at = eng.DateTimeField(onupdate=datetime.utcnow)
+    created_at = eng.DateTimeField(default=datetime.utcnow)
     user_id = eng.ForeignKeyField(
         ref_document='User',
         ref_column='users.username',
@@ -76,6 +78,9 @@ class User(AuthModelDefaultMixin, BaseDocument):
         document='Profile', backref_name='user', uselist=False)
 
     id = eng.IdField()
+    updated_at = eng.DateTimeField(onupdate=datetime.utcnow)
+    created_at = eng.DateTimeField(default=datetime.utcnow)
+
     timestamp = eng.DateTimeField(default=datetime.utcnow)
 
     username = eng.StringField(
