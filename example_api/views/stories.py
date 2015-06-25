@@ -1,8 +1,6 @@
 import logging
 from random import random
 
-from nefertari.elasticsearch import ES
-
 from example_api.views.base import BaseView
 from example_api.models import Story
 
@@ -19,18 +17,6 @@ class ArbitraryObject(object):
 
 class StoriesView(BaseView):
     Model = Story
-
-    def get_collection_es(self):
-        search_params = []
-
-        if 'q' in self._query_params:
-            search_params.append(self._query_params.pop('q'))
-
-        self._raw_terms = ' AND '.join(search_params)
-
-        return ES(self.Model.__name__).get_collection(
-            _raw_terms=self._raw_terms,
-            **self._query_params)
 
     def index(self):
         return self.get_collection_es()
