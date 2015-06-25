@@ -12,18 +12,16 @@ class Story(ESBaseDocument):
         'id', 'start_date', 'due_date', 'name', 'description', 'progress']
     _public_fields = ['id', 'start_date', 'due_date', 'name']
 
+    id = eng.IdField(primary_key=True)
     updated_at = eng.DateTimeField(onupdate=datetime.utcnow)
     created_at = eng.DateTimeField(default=datetime.utcnow)
 
-    id = eng.IdField(primary_key=True)
-    timestamp = eng.DateTimeField(default=datetime.utcnow)
     start_date = eng.DateTimeField(default=datetime.utcnow)
     due_date = eng.DateTimeField()
     name = eng.StringField(required=True)
     description = eng.TextField(required=True)
     progress = eng.FloatField(default=0)
     completed = eng.BooleanField()
-
     signs_number = eng.BigIntegerField()
     valid_date = eng.DateField()
     valid_time = eng.TimeField()

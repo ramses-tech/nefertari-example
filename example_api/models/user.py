@@ -47,15 +47,38 @@ class Profile(BaseDocument):
 class User(AuthModelDefaultMixin, BaseDocument):
     "Represents a user"
     meta = dict(
-        indexes=['username', 'email', 'groups', 'timestamp',
+        indexes=['username', 'email', 'groups', 'created_at',
                  'last_login', 'status'],
-        ordering=['-timestamp']
+        ordering=['-created_at']
     )
     __tablename__ = 'users'
     _nested_relationships = ['profile']
 
     _auth_fields = ['id', 'username', 'first_name', 'last_name', 'stories']
     _public_fields = ['username']
+
+    id = eng.IdField()
+    updated_at = eng.DateTimeField(onupdate=datetime.utcnow)
+    created_at = eng.DateTimeField(default=datetime.utcnow)
+
+    username = eng.StringField(
+        primary_key=True, min_length=1, max_length=50, unique=True,
+        before_validation=[random_uuid, lower_strip])
+    email = eng.StringField(
+        unique=True, required=True,
+        before_validation=[lower_strip])
+    password = eng.StringField(
+        min_length=3, required=True,
+        after_validation=[encrypt_password])
+    first_name = eng.StringField(max_length=50, default='')
+    last_name = eng.StringField(max_length=50, default='')
+    last_login = eng.DateTimeField()
+    groups = eng.ListField(
+        item_type=eng.StringField,
+        choices=['admin', 'user'], default=['user'])
+    status = eng.ChoiceField(
+        choices=['active', 'inactive', 'blocked'], default='active')
+    settings = eng.DictField()
 
     # `Relationship` - constructor for defining one-to-N relationships
     #
@@ -73,38 +96,8 @@ class User(AuthModelDefaultMixin, BaseDocument):
         document='Story', ondelete='NULLIFY',
         backref_name='assignee', backref_ondelete='NULLIFY',
         foreign_keys='Story.assignee_id')
-
     profile = eng.Relationship(
         document='Profile', backref_name='user', uselist=False)
-
-    id = eng.IdField()
-    updated_at = eng.DateTimeField(onupdate=datetime.utcnow)
-    created_at = eng.DateTimeField(default=datetime.utcnow)
-
-    timestamp = eng.DateTimeField(default=datetime.utcnow)
-
-    username = eng.StringField(
-        primary_key=True, min_length=1, max_length=50, unique=True,
-        before_validation=[random_uuid, lower_strip])
-    email = eng.StringField(
-        unique=True, required=True,
-        before_validation=[lower_strip])
-    password = eng.StringField(
-        min_length=3, required=True,
-        after_validation=[encrypt_password])
-
-    first_name = eng.StringField(max_length=50, default='')
-    last_name = eng.StringField(max_length=50, default='')
-    last_login = eng.DateTimeField()
-
-    groups = eng.ListField(
-        item_type=eng.StringField,
-        choices=['admin', 'user'], default=['user'])
-
-    status = eng.ChoiceField(
-        choices=['active', 'inactive', 'blocked'], default='active')
-
-    settings = eng.DictField()
 
     @classmethod
     def get_unauth_user(cls, request):
