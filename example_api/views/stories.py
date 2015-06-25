@@ -30,8 +30,8 @@ class StoriesView(BaseView):
         return story.save(refresh_index=self.refresh_index)
 
     def update(self, **kwargs):
-        kwargs = self.resolve_kwargs(kwargs)
-        story = self.Model.get_resource(**kwargs)
+        story = self.Model.get_resource(
+            id=kwargs.pop('story_id'), **kwargs)
         return story.update(
             self._json_params,
             refresh_index=self.refresh_index)
@@ -40,8 +40,8 @@ class StoriesView(BaseView):
         return self.update(**kwargs)
 
     def delete(self, **kwargs):
-        kwargs = self.resolve_kwargs(kwargs)
-        story = self.Model.get_resource(**kwargs)
+        story = self.Model.get_resource(
+            id=kwargs.pop('story_id'), **kwargs)
         story.delete(refresh_index=self.refresh_index)
 
     def delete_many(self):
