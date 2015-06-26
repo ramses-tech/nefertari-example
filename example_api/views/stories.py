@@ -30,7 +30,7 @@ class StoriesView(BaseView):
 
         return ES(self.Model.__name__).get_collection(
             _raw_terms=self._raw_terms,
-            self._query_params)
+            **self._query_params)
 
     def index(self):
         return self.get_collection_es()
