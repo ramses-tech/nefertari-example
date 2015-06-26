@@ -75,5 +75,5 @@ class StoriesView(BaseView):
             es_stories, _limit=self._query_params['_limit'])
 
         return self.Model._update_many(
-            stories, refresh_index=self.refresh_index,
-            **self._json_params)
+            stories, self._json_params,
+            refresh_index=self.refresh_index)
