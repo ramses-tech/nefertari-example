@@ -23,7 +23,7 @@ class UsersView(BaseView):
     def create(self):
         self._json_params.setdefault('groups', ['user'])
         user = self.Model(**self._json_params)
-        return user.save(refresh_index=self.refresh_index)
+        return user.save()
 
     def update(self, **kwargs):
         user = self.Model.get_resource(
@@ -36,8 +36,7 @@ class UsersView(BaseView):
 
         if 'reset' in self._json_params:
             self._json_params.pop('reset', '')
-        return user.update(
-            self._json_params, refresh_index=self.refresh_index)
+        return user.update(self._json_params)
 
     def replace(self, **kwargs):
         return self.update(**kwargs)
@@ -45,7 +44,7 @@ class UsersView(BaseView):
     def delete(self, **kwargs):
         story = self.Model.get_resource(
             username=kwargs.pop('user_username'), **kwargs)
-        story.delete(refresh_index=self.refresh_index)
+        story.delete()
 
 
 class UserAttributesView(BaseView):
@@ -68,8 +67,7 @@ class UserAttributesView(BaseView):
         obj.update_iterables(
             self._json_params, self.attr,
             unique=self.unique,
-            value_type=self.value_type,
-            refresh_index=self.refresh_index)
+            value_type=self.value_type)
         return getattr(obj, self.attr, None)
 
 
@@ -85,16 +83,14 @@ class UserProfileView(BaseView):
         obj = User.get_resource(
             username=kwargs.pop('user_username'), **kwargs)
         profile = self.Model(**self._json_params)
-        profile = profile.save(refresh_index=self.refresh_index)
-        obj.update({'profile': profile}, refresh_index=self.refresh_index)
+        profile = profile.save()
+        obj.update({'profile': profile})
         return obj.profile
 
     def update(self, **kwargs):
         user = User.get_resource(
             username=kwargs.pop('user_username'), **kwargs)
-        return user.profile.update(
-            self._json_params,
-            refresh_index=self.refresh_index)
+        return user.profile.update(self._json_params)
 
     def replace(self, **kwargs):
         return self.update(**kwargs)
