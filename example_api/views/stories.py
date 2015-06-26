@@ -1,8 +1,6 @@
 import logging
 from random import random
 
-from nefertari.elasticsearch import ES
-
 from example_api.views.base import BaseView
 from example_api.models import Story
 
@@ -20,18 +18,6 @@ class ArbitraryObject(object):
 class StoriesView(BaseView):
     Model = Story
 
-    def get_collection_es(self):
-        search_params = []
-
-        if 'q' in self._query_params:
-            search_params.append(self._query_params.pop('q'))
-
-        self._raw_terms = ' AND '.join(search_params)
-
-        return ES(self.Model.__name__).get_collection(
-            _raw_terms=self._raw_terms,
-            **self._query_params)
-
     def index(self):
         return self.get_collection_es()
 
@@ -44,8 +30,8 @@ class StoriesView(BaseView):
         return story.save(refresh_index=self.refresh_index)
 
     def update(self, **kwargs):
-        kwargs = self.resolve_kwargs(kwargs)
-        story = self.Model.get_resource(**kwargs)
+        story = self.Model.get_resource(
+            id=kwargs.pop('story_id'), **kwargs)
         return story.update(
             self._json_params,
             refresh_index=self.refresh_index)
@@ -54,8 +40,8 @@ class StoriesView(BaseView):
         return self.update(**kwargs)
 
     def delete(self, **kwargs):
-        kwargs = self.resolve_kwargs(kwargs)
-        story = self.Model.get_resource(**kwargs)
+        story = self.Model.get_resource(
+            id=kwargs.pop('story_id'), **kwargs)
         story.delete(refresh_index=self.refresh_index)
 
     def delete_many(self):
