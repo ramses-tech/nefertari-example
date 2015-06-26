@@ -23,7 +23,7 @@ class UsersView(BaseView):
     def create(self):
         self._json_params.setdefault('groups', ['user'])
         user = self.Model(**self._json_params)
-        return user.save(refresh_index=self.refresh_index)
+        return user.save(self._query_params)
 
     def update(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
@@ -37,7 +37,7 @@ class UsersView(BaseView):
         if 'reset' in self._json_params:
             self._json_params.pop('reset', '')
         return user.update(
-            self._json_params, refresh_index=self.refresh_index)
+            self._json_params, self._query_params)
 
     def replace(self, **kwargs):
         return self.update(**kwargs)
@@ -45,7 +45,7 @@ class UsersView(BaseView):
     def delete(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
         story = self.Model.get_resource(**kwargs)
-        story.delete(refresh_index=self.refresh_index)
+        story.delete(self._query_params)
 
 
 class UserAttributesView(BaseView):
@@ -69,7 +69,7 @@ class UserAttributesView(BaseView):
             self._json_params, self.attr,
             unique=self.unique,
             value_type=self.value_type,
-            refresh_index=self.refresh_index)
+            request_params=self._query_params)
         return getattr(obj, self.attr, None)
 
 
@@ -85,16 +85,15 @@ class UserProfileView(BaseView):
         kwargs = self.resolve_kwargs(kwargs)
         obj = User.get_resource(**kwargs)
         profile = self.Model(**self._json_params)
-        profile = profile.save(refresh_index=self.refresh_index)
-        obj.update({'profile': profile}, refresh_index=self.refresh_index)
+        profile = profile.save(self._query_params)
+        obj.update({'profile': profile}, self._query_params)
         return obj.profile
 
     def update(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
         user = User.get_resource(**kwargs)
         return user.profile.update(
-            self._json_params,
-            refresh_index=self.refresh_index)
+            self._json_params, self._query_params)
 
     def replace(self, **kwargs):
         return self.update(**kwargs)

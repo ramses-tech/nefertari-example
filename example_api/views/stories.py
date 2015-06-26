@@ -30,7 +30,7 @@ class StoriesView(BaseView):
 
         return ES(self.Model.__name__).get_collection(
             _raw_terms=self._raw_terms,
-            **self._query_params)
+            self._query_params)
 
     def index(self):
         return self.get_collection_es()
@@ -41,14 +41,12 @@ class StoriesView(BaseView):
     def create(self):
         story = self.Model(**self._json_params)
         story.arbitrary_object = ArbitraryObject()
-        return story.save(refresh_index=self.refresh_index)
+        return story.save(self._query_params)
 
     def update(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
         story = self.Model.get_resource(**kwargs)
-        return story.update(
-            self._json_params,
-            refresh_index=self.refresh_index)
+        return story.update(self._json_params, self._query_params)
 
     def replace(self, **kwargs):
         return self.update(**kwargs)
@@ -56,7 +54,7 @@ class StoriesView(BaseView):
     def delete(self, **kwargs):
         kwargs = self.resolve_kwargs(kwargs)
         story = self.Model.get_resource(**kwargs)
-        story.delete(refresh_index=self.refresh_index)
+        story.delete(self._query_params)
 
     def delete_many(self):
         es_stories = self.get_collection_es()
@@ -66,8 +64,7 @@ class StoriesView(BaseView):
         if self.needs_confirmation():
             return stories
 
-        return self.Model._delete_many(
-            stories, refresh_index=self.refresh_index)
+        return self.Model._delete_many(stories, self._query_params)
 
     def update_many(self):
         es_stories = self.get_collection_es()
@@ -75,5 +72,4 @@ class StoriesView(BaseView):
             es_stories, _limit=self._query_params['_limit'])
 
         return self.Model._update_many(
-            stories, self._json_params,
-            refresh_index=self.refresh_index)
+            stories, self._json_params, self._query_params)
