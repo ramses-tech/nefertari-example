@@ -137,12 +137,11 @@ def includeme(config):
 
 
 def create_resources(config):
-    from example_api.models import User, Story
     root = config.get_root_resource()
 
     user = root.add(
         'user', 'users',
-        id_name='user_' + User.pk_field(),
+        id_name='user_username',
         factory="example_api.acl.UserACL")
 
     user.add('group', 'groups',
@@ -159,7 +158,7 @@ def create_resources(config):
 
     root.add(
         'story', 'stories',
-        id_name='story_' + Story.pk_field(),
+        id_name='story_id',
         factory="example_api.acl.StoryACL")
 
 

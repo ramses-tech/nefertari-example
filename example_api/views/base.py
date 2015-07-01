@@ -16,10 +16,3 @@ class BaseView(NefertariBaseView):
             self._query_params.process_int_param('_limit', 20)
 
         self._auth = example_api.Settings.asbool('auth')
-
-    def resolve_kwargs(self, kwargs):
-        resolved = {}
-        for key, value in kwargs.items():
-            key = key.split('_', 1)[1]
-            resolved[key] = value
-        return resolved
