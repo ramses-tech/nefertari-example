@@ -49,7 +49,6 @@ class UserACL(BaseACL):
             raise JHTTPNotFound
 
         obj = self.user
-        obj.__acl__ = self.context_acl(obj)
         obj.__parent__ = self
         obj.__name__ = key
         return obj
@@ -73,7 +72,6 @@ class StoryACL(BaseACL):
 
     def __getitem__(self, key):
         obj = Story.get(id=key, __raise=True)
-        obj.__acl__ = self.context_acl(obj)
         obj.__parent__ = self
         obj.__name__ = key
         return obj
