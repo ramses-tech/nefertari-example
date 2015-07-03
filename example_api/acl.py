@@ -29,18 +29,12 @@ class UserACL(BaseACL):
           to everyone.
     """
     __context_class__ = User
+    __item_acl__ = [(Allow, Everyone, ['show', 'item_options'])]
 
     def __init__(self, request):
         super(UserACL, self).__init__(request)
         self.acl = (
             Allow, Everyone, ['index', 'create', 'collection_options'])
-
-    def context_acl(self, context):
-        return [
-            (Allow, str(context.id), 'update'),
-            (Allow, Everyone, ['show', 'item_options']),
-            (Deny, str(context.id), 'delete'),
-        ]
 
     def __getitem__(self, key):
         if not self.user:
@@ -54,16 +48,14 @@ class UserACL(BaseACL):
 
 class StoryACL(BaseACL):
     __context_class__ = Story
+    __item_acl__ = [
+        (Allow, 'g:admin', ALL_PERMISSIONS),
+        (Allow, Everyone, ['show', 'item_options']),
+    ]
 
     def __init__(self, request):
         super(StoryACL, self).__init__(request)
         self.acl = (Allow, Everyone, ['index', 'collection_options'])
-
-    def context_acl(self, context):
-        return [
-            (Allow, 'g:admin', ALL_PERMISSIONS),
-            (Allow, Everyone, ['show', 'item_options']),
-        ]
 
     def __getitem__(self, key):
         obj = Story.get(id=key, __raise=True)
