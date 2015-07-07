@@ -1,5 +1,4 @@
-from pyramid.security import (
-    Allow, Everyone, Deny, ALL_PERMISSIONS)
+from pyramid.security import Allow, Everyone, ALL_PERMISSIONS
 
 from nefertari.json_httpexceptions import JHTTPNotFound
 from nefertari.acl import BaseACL as NefertariBaseACL
