@@ -165,6 +165,7 @@ def create_resources(config):
 
 def initialize():
     from example_api.models import User
+    from pyramid.security import Allow, ALL_PERMISSIONS
     import transaction
     log.info('Initializing')
     try:
@@ -178,6 +179,7 @@ def initialize():
                 password=s_pass,
                 email=s_email,
                 groups=['admin'],
+                _acl=[(Allow, 'g:admin', ALL_PERMISSIONS)],
             ))
         changed = created
         if not created and Settings.asbool('system.reset'):
