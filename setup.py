@@ -24,7 +24,7 @@ setup(
     author='',
     author_email='',
     url='',
-    keywords='web pyramid pylons',
+    keywords='web pyramid pylons nefertari',
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
@@ -34,7 +34,5 @@ setup(
     entry_points="""\
     [paste.app_factory]
       main = example_api:main
-    [console_scripts]
-      example_api.indexer = nefertari.scripts.es:main
     """,
 )
