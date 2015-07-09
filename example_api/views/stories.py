@@ -1,7 +1,8 @@
 import logging
 from random import random
 
-from example_api.views.base import BaseView
+from nefertari.view import BaseView
+
 from example_api.models import Story
 
 log = logging.getLogger(__name__)

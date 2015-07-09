@@ -1,6 +1,7 @@
 import logging
 
-from example_api.views.base import BaseView
+from nefertari.view import BaseView
+
 from example_api.models import User, Profile
 
 
