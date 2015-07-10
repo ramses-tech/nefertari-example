@@ -15,5 +15,5 @@ class SView(BaseView):
             return []
 
         return to_dicts(ES().get_collection(
-            _raw_terms='name:%s*' % (q,), _limit=5,
+            q='name:%s*' % (q,), _limit=5,
         ), _keys=['id', 'name'])
