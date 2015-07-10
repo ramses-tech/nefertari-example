@@ -109,27 +109,5 @@ class User(AuthModelDefaultMixin, BaseDocument):
 
         return cls.get_resource(**{pk_field: arg})
 
-    def to_dict(self, **kw):
-
-        request = kw.get('request', None)
-
-        def is_self():
-            return (request and
-                    request.user and
-                    request.user.username == self.username and
-                    '__nested' not in kw)
-
-        if is_self():
-            _d = super(NefertariBaseDocument, self).to_dict(**kw)
-        else:
-            _d = super(User, self).to_dict(**kw)
-
-        _d['id'] = _d.get(User.pk_field(), None)
-        _d['_id'] = self.id
-
-        _d.pop('password', None)
-
-        return _d
-
     def __repr__(self):
         return '<%s: username=%s>' % (self.__class__.__name__, self.username)
