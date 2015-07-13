@@ -1,5 +1,4 @@
 import logging
-import uuid
 from datetime import datetime
 
 import cryptacular.bcrypt
@@ -11,23 +10,6 @@ from example_api.models.base import BaseDocument
 
 crypt = cryptacular.bcrypt.BCRYPTPasswordManager()
 log = logging.getLogger(__name__)
-
-
-def encrypt_password(instance, new_value):
-    """ Crypt :new_value: if it isn't crypted. """
-    if new_value and not crypt.match(new_value):
-        new_value = str(crypt.encode(new_value))
-    return new_value
-
-
-def lower_strip(instance, new_value):
-    if new_value is None:
-        return new_value
-    return new_value.lower().strip()
-
-
-def random_uuid(instance, new_value):
-    return new_value or uuid.uuid4().hex
 
 
 class Profile(BaseDocument):
