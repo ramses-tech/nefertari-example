@@ -37,7 +37,7 @@ def bootstrap(config):
 
     enable_selfalias(config, "username")
 
-    if Settings.asbool('debug'):
+    if Settings.asbool('enable_get_tunneling'):
         log.warning('*** DEBUG DEBUG DEBUG mode ***')
         config.add_tween('nefertari.tweens.get_tunneling')
 
