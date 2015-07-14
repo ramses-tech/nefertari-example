@@ -119,20 +119,16 @@ def includeme(config):
 
     config.scan(package='example_api.views')
 
-    config.add_route('login', '/login')
-    config.add_view(
-        view='example_api.views.account.TicketAuthenticationView',
-        route_name='login', attr='login', request_method='POST')
-
-    config.add_route('logout', '/logout')
-    config.add_view(
-        view='example_api.views.account.TicketAuthenticationView',
-        route_name='logout', attr='logout')
-
-    config.add_route('account', '/account')
-    config.add_view(
-        view='example_api.views.account.TicketAuthenticationView',
-        route_name='account', attr='register', request_method='POST')
+    root = config.get_root_resource()
+    root.add('account',
+             view='example_api.views.account.TicketAuthRegisterView',
+             factory='nefertari.acl.AuthenticationACL')
+    root.add('login',
+             view='example_api.views.account.TicketAuthLoginView',
+             factory='nefertari.acl.AuthenticationACL')
+    root.add('logout',
+             view='example_api.views.account.TicketAuthLogoutView',
+             factory='nefertari.acl.AuthenticationACL')
 
     create_resources(config)
 
