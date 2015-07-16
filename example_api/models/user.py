@@ -1,34 +1,15 @@
 import logging
-import uuid
 from datetime import datetime
 
 import cryptacular.bcrypt
 
 from nefertari import engine as eng
-from nefertari.engine import BaseDocument as NefertariBaseDocument
-from nefertari.authentication.models import AuthModelDefaultMixin
+from nefertari.authentication.models import AuthUserMixin
 
 from example_api.models.base import BaseDocument
 
 crypt = cryptacular.bcrypt.BCRYPTPasswordManager()
 log = logging.getLogger(__name__)
-
-
-def encrypt_password(instance, new_value):
-    """ Crypt :new_value: if it isn't crypted. """
-    if new_value and not crypt.match(new_value):
-        new_value = str(crypt.encode(new_value))
-    return new_value
-
-
-def lower_strip(instance, new_value):
-    if new_value is None:
-        return new_value
-    return new_value.lower().strip()
-
-
-def random_uuid(instance, new_value):
-    return new_value or uuid.uuid4().hex
 
 
 class Profile(BaseDocument):
@@ -44,7 +25,7 @@ class Profile(BaseDocument):
     address = eng.UnicodeTextField()
 
 
-class User(AuthModelDefaultMixin, BaseDocument):
+class User(AuthUserMixin, BaseDocument):
     "Represents a user"
     meta = dict(
         indexes=['username', 'email', 'groups', 'created_at',
@@ -52,30 +33,16 @@ class User(AuthModelDefaultMixin, BaseDocument):
         ordering=['-created_at']
     )
     __tablename__ = 'users'
-    _nested_relationships = ['profile']
 
+    _nested_relationships = ['profile']
     _auth_fields = ['id', 'username', 'first_name', 'last_name', 'stories']
     _public_fields = ['username']
 
-    id = eng.IdField()
     updated_at = eng.DateTimeField(onupdate=datetime.utcnow)
     created_at = eng.DateTimeField(default=datetime.utcnow)
-
-    username = eng.StringField(
-        primary_key=True, min_length=1, max_length=50, unique=True,
-        before_validation=[random_uuid, lower_strip])
-    email = eng.StringField(
-        unique=True, required=True,
-        before_validation=[lower_strip])
-    password = eng.StringField(
-        min_length=3, required=True,
-        after_validation=[encrypt_password])
     first_name = eng.StringField(max_length=50, default='')
     last_name = eng.StringField(max_length=50, default='')
     last_login = eng.DateTimeField()
-    groups = eng.ListField(
-        item_type=eng.StringField,
-        choices=['admin', 'user'], default=['user'])
     status = eng.ChoiceField(
         choices=['active', 'inactive', 'blocked'], default='active')
     settings = eng.DictField()
@@ -108,28 +75,6 @@ class User(AuthModelDefaultMixin, BaseDocument):
             return cls.get_resource(username='system')
 
         return cls.get_resource(**{pk_field: arg})
-
-    def to_dict(self, **kw):
-
-        request = kw.get('request', None)
-
-        def is_self():
-            return (request and
-                    request.user and
-                    request.user.username == self.username and
-                    '__nested' not in kw)
-
-        if is_self():
-            _d = super(NefertariBaseDocument, self).to_dict(**kw)
-        else:
-            _d = super(User, self).to_dict(**kw)
-
-        _d['id'] = _d.get(User.pk_field(), None)
-        _d['_id'] = self.id
-
-        _d.pop('password', None)
-
-        return _d
 
     def __repr__(self):
         return '<%s: username=%s>' % (self.__class__.__name__, self.username)

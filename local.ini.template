@@ -12,7 +12,7 @@ host = localhost
 base_url = http://%(host)s:6543
 
 auth = true
-debug = true
+enable_get_tunneling = true
 public_max_limit = 100
 
 request_timing.enable = true
