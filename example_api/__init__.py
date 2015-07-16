@@ -38,7 +38,7 @@ def bootstrap(config):
     enable_selfalias(config, "username")
 
     if Settings.asbool('enable_get_tunneling'):
-        log.warning('*** DEBUG DEBUG DEBUG mode ***')
+        log.warning('GET tunneling enabled')
         config.add_tween('nefertari.tweens.get_tunneling')
 
     if Settings.asbool('cors.enable'):
