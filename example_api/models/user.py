@@ -5,8 +5,7 @@ import cryptacular.bcrypt
 
 from nefertari import engine as eng
 from nefertari.authentication.models import AuthUserMixin
-
-from example_api.models.base import BaseDocument
+from nefertari.engine import BaseDocument
 
 crypt = cryptacular.bcrypt.BCRYPTPasswordManager()
 log = logging.getLogger(__name__)

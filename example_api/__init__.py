@@ -38,7 +38,6 @@ def bootstrap(config):
     enable_selfalias(config, "username")
 
     if Settings.asbool('enable_get_tunneling'):
-        log.warning('GET tunneling enabled')
         config.add_tween('nefertari.tweens.get_tunneling')
 
     if Settings.asbool('cors.enable'):
@@ -150,8 +149,6 @@ def create_resources(config):
     user.add('profile',
              view='example_api.views.users.UserProfileView',
              factory="example_api.acl.UserACL")
-
-    root.add('s_one', 's', factory='nefertari.acl.GuestACL')
 
     root.add(
         'story', 'stories',
