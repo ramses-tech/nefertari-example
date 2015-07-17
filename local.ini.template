@@ -2,7 +2,8 @@
 use = egg:example_api
 
 # Nefertari settings
-nefertari.engine = nefertari_mongodb
+; nefertari.engine = nefertari_mongodb
+nefertari.engine = nefertari_sqla
 
 # SQLA
 sqlalchemy.url = postgresql://%(host)s:5432/example_api
