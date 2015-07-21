@@ -1,8 +1,7 @@
 from datetime import datetime
 
 from nefertari import engine as eng
-
-from example_api.models.base import ESBaseDocument
+from nefertari.engine import ESBaseDocument
 
 
 class Story(ESBaseDocument):

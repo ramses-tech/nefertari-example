@@ -1,7 +1,8 @@
 import logging
 from random import random
 
-from example_api.views.base import BaseView
+from nefertari.view import BaseView
+
 from example_api.models import Story
 
 log = logging.getLogger(__name__)
@@ -27,12 +28,12 @@ class StoriesView(BaseView):
     def create(self):
         story = self.Model(**self._json_params)
         story.arbitrary_object = ArbitraryObject()
-        return story.save(self._query_params)
+        return story.save(self.request)
 
     def update(self, **kwargs):
         story = self.Model.get_resource(
             id=kwargs.pop('story_id'), **kwargs)
-        return story.update(self._json_params, self._query_params)
+        return story.update(self._json_params, self.request)
 
     def replace(self, **kwargs):
         return self.update(**kwargs)
@@ -40,22 +41,20 @@ class StoriesView(BaseView):
     def delete(self, **kwargs):
         story = self.Model.get_resource(
             id=kwargs.pop('story_id'), **kwargs)
-        story.delete(self._query_params)
+        story.delete(self.request)
 
     def delete_many(self):
         es_stories = self.get_collection_es()
-        stories = self.Model.filter_objects(
-            es_stories, _limit=self._query_params['_limit'])
+        stories = self.Model.filter_objects(es_stories)
 
         if self.needs_confirmation():
             return stories
 
-        return self.Model._delete_many(stories, self._query_params)
+        return self.Model._delete_many(stories, self.request)
 
     def update_many(self):
         es_stories = self.get_collection_es()
-        stories = self.Model.filter_objects(
-            es_stories, _limit=self._query_params['_limit'])
+        stories = self.Model.filter_objects(es_stories)
 
         return self.Model._update_many(
-            stories, self._json_params, self._query_params)
+            stories, self._json_params, self.request)
