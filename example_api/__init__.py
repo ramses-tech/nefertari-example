@@ -33,6 +33,7 @@ def bootstrap(config):
     config.include('example_api.models')
     config.include('nefertari.view')
     config.include('nefertari.elasticsearch')
+    config.include('nefertari.json_httpexceptions')
 
     enable_selfalias(config, "username")
 
