@@ -16,7 +16,9 @@ class UserACL(NefertariBaseACL):
           to everyone.
     """
     __context_class__ = User
-    __item_acl__ = [(Allow, Everyone, ['show', 'item_options'])]
+    __item_acl__ = (
+        (Allow, Everyone, ['show', 'item_options']),
+    )
 
     def __init__(self, request):
         super(UserACL, self).__init__(request)
@@ -42,10 +44,10 @@ class UserACL(NefertariBaseACL):
 
 class StoryACL(NefertariBaseACL):
     __context_class__ = Story
-    __item_acl__ = [
+    __item_acl__ = (
         (Allow, 'g:admin', ALL_PERMISSIONS),
         (Allow, Everyone, ['show', 'item_options']),
-    ]
+    )
 
     def __init__(self, request):
         super(StoryACL, self).__init__(request)
