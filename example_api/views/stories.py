@@ -46,15 +46,10 @@ class StoriesView(BaseView):
     def delete_many(self):
         es_stories = self.get_collection_es()
         stories = self.Model.filter_objects(es_stories)
-
-        if self.needs_confirmation():
-            return stories
-
         return self.Model._delete_many(stories, self.request)
 
     def update_many(self):
         es_stories = self.get_collection_es()
         stories = self.Model.filter_objects(es_stories)
-
         return self.Model._update_many(
             stories, self._json_params, self.request)
