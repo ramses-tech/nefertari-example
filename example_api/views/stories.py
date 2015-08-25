@@ -2,6 +2,7 @@ import logging
 from random import random
 
 from nefertari.view import BaseView
+from nefertari.json_httpexceptions import JHTTPNotFound
 
 from example_api.models import Story
 
@@ -23,7 +24,10 @@ class StoriesView(BaseView):
         return self.get_collection_es()
 
     def show(self, **kwargs):
-        return self.context
+        try:
+            return self.Model.get(id=kwargs['story_id'], __raises=True)
+        except AttributeError:
+            raise JHTTPNotFound()
 
     def create(self):
         story = self.Model(**self._json_params)

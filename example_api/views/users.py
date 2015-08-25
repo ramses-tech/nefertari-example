@@ -19,7 +19,7 @@ class UsersView(BaseView):
         return self.Model.get_collection(**self._query_params)
 
     def show(self, **kwargs):
-        return self.context
+        return self.context.db_object()
 
     def create(self):
         self._json_params.setdefault('groups', ['user'])

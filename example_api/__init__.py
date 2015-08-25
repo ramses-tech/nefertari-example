@@ -138,22 +138,22 @@ def create_resources(config):
     user = root.add(
         'user', 'users',
         id_name='user_username',
-        factory="example_api.acl.UserACL")
+        factory="example_api.acl.UsersACL")
 
     user.add('group', 'groups',
              view='example_api.views.users.UserAttributesView',
-             factory="example_api.acl.UserACL")
+             factory="example_api.acl.UsersACL")
     user.add('setting', 'settings',
              view='example_api.views.users.UserAttributesView',
-             factory="example_api.acl.UserACL")
+             factory="example_api.acl.UsersACL")
     user.add('profile',
              view='example_api.views.users.UserProfileView',
-             factory="example_api.acl.UserACL")
+             factory="example_api.acl.UsersACL")
 
     root.add(
         'story', 'stories',
         id_name='story_id',
-        factory="example_api.acl.StoryACL")
+        factory="example_api.acl.StoriesACL")
 
 
 def initialize():
