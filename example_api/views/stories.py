@@ -24,10 +24,7 @@ class StoriesView(BaseView):
         return self.get_collection_es()
 
     def show(self, **kwargs):
-        try:
-            return self.Model.get(id=kwargs['story_id'], __raises=True)
-        except AttributeError:
-            raise JHTTPNotFound()
+        return self.context
 
     def create(self):
         story = self.Model(**self._json_params)
