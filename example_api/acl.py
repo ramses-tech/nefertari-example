@@ -8,6 +8,7 @@ from pyramid.security import (
 from nefertari.acl import (
     CollectionACL,
     authenticated_userid,
+    DatabaseACLMixin,
     )
 
 from example_api.models import (
@@ -16,7 +17,7 @@ from example_api.models import (
     )
 
 
-class UsersACL(CollectionACL):
+class UsersACL(DatabaseACLMixin, CollectionACL):
     item_model = User
 
     __acl__ = (
@@ -39,7 +40,7 @@ class UsersACL(CollectionACL):
             )
 
 
-class StoriesACL(CollectionACL):
+class StoriesACL(DatabaseACLMixin, CollectionACL):
     item_model = Story
 
     __acl__ = (
