@@ -1,7 +1,7 @@
 import logging
 from random import random
 
-from nefertari.view import BaseView
+from nefertari.view import ACLFilterBaseView
 
 from example_api.models import Story
 
@@ -16,7 +16,7 @@ class ArbitraryObject(object):
         return dict(attr=self.attr)
 
 
-class StoriesView(BaseView):
+class StoriesView(ACLFilterBaseView):
     Model = Story
 
     def index(self):
