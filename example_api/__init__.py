@@ -28,7 +28,7 @@ def bootstrap(config):
     config.include('nefertari')
 
     root = config.get_root_resource()
-    root.default_factory = 'nefertari.acl.AdminACL'
+    root.default_factory = 'nefertari.acl.RootACL'
 
     config.include('example_api.models')
     config.include('nefertari.view')

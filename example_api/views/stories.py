@@ -2,7 +2,6 @@ import logging
 from random import random
 
 from nefertari.view import BaseView
-from nefertari.json_httpexceptions import JHTTPNotFound
 
 from example_api.models import Story
 
