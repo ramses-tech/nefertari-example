@@ -8,13 +8,14 @@ from pyramid.security import (
 from nefertari.acl import (
     CollectionACL,
     authenticated_userid,
-    DatabaseACLMixin,
     )
 
 from example_api.models import (
     User,
     Story,
     )
+
+from nefertari_guards.acl import DatabaseACLMixin
 
 
 class UsersACL(DatabaseACLMixin, CollectionACL):

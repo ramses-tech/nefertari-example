@@ -1,7 +1,9 @@
 import logging
 from random import random
 
-from nefertari.view import BaseView, ACLFilterViewMixin
+from nefertari.view import BaseView
+from nefertari_guards.view import ACLFilterViewMixin
+
 
 from example_api.models import Story
 

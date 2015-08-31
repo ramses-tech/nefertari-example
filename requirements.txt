@@ -6,5 +6,6 @@ waitress==0.8.9
 nefertari==0.5.0
 nefertari-mongodb==0.3.2
 nefertari-sqla==0.3.2
+nefertari-guards
 
 -e .
