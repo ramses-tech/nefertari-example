@@ -114,44 +114,7 @@ def main(global_config, **settings):
 
 
 def setup_event_handlers(config):
-    from example_api.models import Story
-    from nefertari.events import (
-        before_index,
-        before_show,
-        before_create,
-        before_update,
-        before_replace,
-        before_delete,
-        before_update_many,
-        before_delete_many,
-        before_item_options,
-        before_collection_options,
-        after_index,
-        after_show,
-        after_create,
-        after_update,
-        after_replace,
-        after_delete,
-        after_update_many,
-        after_delete_many,
-        after_item_options,
-        after_collection_options,
-    )
-
-    def handler(event):
-        print
-        print '>>>>>>>>>>>>>>>>>', event
-        print '>>>>>>>>>>>>>>>>>', event.model
-        print '>>>>>>>>>>>>>>>>>', event.fields
-        print '>>>>>>>>>>>>>>>>>', event.field
-        print
-
-    config.add_subscriber(
-        handler, before_update,
-        model=Story, field='name')
-    config.add_subscriber(
-        handler, before_update,
-        model=Story)
+    config.include('nefertari.authentication')
 
 
 def includeme(config):
