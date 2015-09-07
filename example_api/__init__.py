@@ -106,10 +106,16 @@ def main(global_config, **settings):
     from nefertari.elasticsearch import ES
     ES.setup_mappings()
 
+    setup_event_handlers(config)
+
     config.commit()
     initialize()
 
     return config.make_wsgi_app()
+
+
+def setup_event_handlers(config):
+    config.include('nefertari.authentication')
 
 
 def includeme(config):
