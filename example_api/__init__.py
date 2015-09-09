@@ -4,6 +4,7 @@ import logging
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
+import cryptacular.bcrypt
 
 import nefertari
 from nefertari.tweens import enable_selfalias
@@ -165,10 +166,11 @@ def create_resources(config):
 def initialize():
     from example_api.models import User
     import transaction
+    crypt = cryptacular.bcrypt.BCRYPTPasswordManager()
     log.info('Initializing')
     try:
         s_user = Settings['system.user']
-        s_pass = Settings['system.password']
+        s_pass = str(crypt.encode(Settings['system.password']))
         s_email = Settings['system.email']
         log.info('Creating system user')
         user, created = User.get_or_create(
