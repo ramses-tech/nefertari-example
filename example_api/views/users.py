@@ -47,6 +47,15 @@ class UsersView(BaseView):
             username=kwargs.pop('user_username'), **kwargs)
         story.delete()
 
+    def update_many(self):
+        stories = self.Model.get_collection(**self._query_params)
+        return self.Model._update_many(
+            stories, self._json_params, self.request)
+
+    def delete_many(self):
+        stories = self.Model.get_collection(**self._query_params)
+        return self.Model._delete_many(stories, self.request)
+
 
 class UserAttributesView(BaseView):
     Model = User
