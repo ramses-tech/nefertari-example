@@ -1,6 +1,7 @@
 from pyramid.security import (
     Allow,
     Everyone,
+    Authenticated,
     Deny,
     ALL_PERMISSIONS,
     )
@@ -21,7 +22,8 @@ class UsersACL(CollectionACL):
 
     __acl__ = (
         (Allow, 'g:admin', ALL_PERMISSIONS),
-        (Allow, Everyone, ('view', 'create', 'options')),
+        (Allow, Everyone, ('view', 'options')),
+        (Allow, Authenticated, 'create'),
         )
 
     def item_db_id(self, key):
@@ -35,7 +37,6 @@ class UsersACL(CollectionACL):
             (Allow, 'g:admin', ALL_PERMISSIONS),
             (Allow, Everyone, ('view', 'options')),
             (Allow, username, 'update'),
-            (Deny, username, 'delete'),
             )
 
 
@@ -44,5 +45,14 @@ class StoriesACL(CollectionACL):
 
     __acl__ = (
         (Allow, 'g:admin', ALL_PERMISSIONS),
-        (Allow, Everyone, ('view', 'create', 'options')),
+        (Allow, Everyone, ('view', 'options')),
+        (Allow, Authenticated, 'create'),
         )
+
+    def item_acl(self, item):
+        username = str(item.owner.username)
+        return (
+            (Allow, 'g:admin', ALL_PERMISSIONS),
+            (Allow, Everyone, ('view', 'options')),
+            (Allow, username, 'update'),
+            )
