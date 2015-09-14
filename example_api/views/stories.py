@@ -26,7 +26,7 @@ class StoriesView(BaseView):
         return self.context
 
     def create(self):
-        if self._json_params.get('owner') is None:
+        if 'owner' not in self._json_params:
             self._json_params['owner'] = self.request.user
         story = self.Model(**self._json_params)
         story.arbitrary_object = ArbitraryObject()
