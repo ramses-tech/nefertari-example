@@ -50,9 +50,11 @@ class StoriesACL(CollectionACL):
         )
 
     def item_acl(self, item):
-        username = str(item.owner.username)
+        owner = item.owner
+        if hasattr(owner, 'username'):
+            owner = owner.username
         return (
             (Allow, 'g:admin', ALL_PERMISSIONS),
             (Allow, Everyone, ('view', 'options')),
-            (Allow, username, 'update'),
+            (Allow, str(owner), 'update'),
             )
