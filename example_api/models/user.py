@@ -71,9 +71,9 @@ class User(AuthUserMixin, BaseDocument):
         arg = request.matchdict.get('user_' + pk_field)
 
         if arg == 'self' or not arg:
-            return cls.get_resource(username='system')
+            return cls.get_item(username='system')
 
-        return cls.get_resource(**{pk_field: arg})
+        return cls.get_item(**{pk_field: arg})
 
     def __repr__(self):
         return '<%s: username=%s>' % (self.__class__.__name__, self.username)
