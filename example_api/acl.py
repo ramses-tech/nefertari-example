@@ -25,21 +25,13 @@ class UsersACL(CollectionACL):
     __acl__ = (
         (Allow, 'g:admin', ALL_PERMISSIONS),
         (Allow, Everyone, ('view', 'options')),
+        (Allow, Authenticated, 'create'),
         )
 
     def item_db_id(self, key):
         if key != 'self' or not self.request.user:
             return key
         return authenticated_userid(self.request)
-
-    def item_acl(self, item):
-        username = str(item.username)
-        return (
-            (Allow, 'g:admin', ALL_PERMISSIONS),
-            (Allow, Everyone, ('view', 'options')),
-            (Allow, username, 'update'),
-            (Deny, username, 'delete'),
-            )
 
 
 class StoriesACL(DatabaseACLMixin, CollectionACL):
