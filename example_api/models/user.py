@@ -36,6 +36,7 @@ class User(AuthUserMixin, BaseDocument):
     _nested_relationships = ['profile']
     _auth_fields = ['username', 'first_name', 'last_name', 'stories']
     _public_fields = ['username']
+    _hidden_fields = ['password']
 
     updated_at = eng.DateTimeField(onupdate=datetime.utcnow)
     created_at = eng.DateTimeField(default=datetime.utcnow)
