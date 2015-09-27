@@ -27,7 +27,7 @@ class UsersView(BaseView):
         return user.save()
 
     def update(self, **kwargs):
-        user = self.Model.get_resource(
+        user = self.Model.get_item(
             username=kwargs.pop('user_username'), **kwargs)
 
         # empty password?
@@ -43,7 +43,7 @@ class UsersView(BaseView):
         return self.update(**kwargs)
 
     def delete(self, **kwargs):
-        story = self.Model.get_resource(
+        story = self.Model.get_item(
             username=kwargs.pop('user_username'), **kwargs)
         story.delete()
 
@@ -67,12 +67,12 @@ class UserAttributesView(BaseView):
         self.unique = self.attr in ['settings', 'groups']
 
     def index(self, **kwargs):
-        obj = self.Model.get_resource(
+        obj = self.Model.get_item(
             username=kwargs.pop('user_username'), **kwargs)
         return getattr(obj, self.attr)
 
     def create(self, **kwargs):
-        obj = self.Model.get_resource(
+        obj = self.Model.get_item(
             username=kwargs.pop('user_username'), **kwargs)
         obj.update_iterables(
             self._json_params, self.attr,
@@ -85,12 +85,12 @@ class UserProfileView(BaseView):
     Model = Profile
 
     def show(self, **kwargs):
-        user = User.get_resource(
+        user = User.get_item(
             username=kwargs.pop('user_username'), **kwargs)
         return user.profile
 
     def create(self, **kwargs):
-        obj = User.get_resource(
+        obj = User.get_item(
             username=kwargs.pop('user_username'), **kwargs)
         profile = self.Model(**self._json_params)
         profile = profile.save()
@@ -98,7 +98,7 @@ class UserProfileView(BaseView):
         return obj.profile
 
     def update(self, **kwargs):
-        user = User.get_resource(
+        user = User.get_item(
             username=kwargs.pop('user_username'), **kwargs)
         return user.profile.update(self._json_params)
 

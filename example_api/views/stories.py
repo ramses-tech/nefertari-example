@@ -33,7 +33,7 @@ class StoriesView(BaseView):
         return story.save(self.request)
 
     def update(self, **kwargs):
-        story = self.Model.get_resource(
+        story = self.Model.get_item(
             id=kwargs.pop('story_id'), **kwargs)
         return story.update(self._json_params, self.request)
 
@@ -41,7 +41,7 @@ class StoriesView(BaseView):
         return self.update(**kwargs)
 
     def delete(self, **kwargs):
-        story = self.Model.get_resource(
+        story = self.Model.get_item(
             id=kwargs.pop('story_id'), **kwargs)
         story.delete(self.request)
 
