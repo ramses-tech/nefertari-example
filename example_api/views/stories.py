@@ -3,7 +3,8 @@ from random import random
 
 from nefertari.view import BaseView
 from nefertari_guards.view import ACLFilterViewMixin
-
+from nefertari_guards import engine as guards_engine
+from pyramid.security import Allow
 
 from example_api.models import Story
 
@@ -30,6 +31,12 @@ class StoriesView(ACLFilterViewMixin, BaseView):
     def create(self):
         if 'owner' not in self._json_params:
             self._json_params['owner'] = self.request.user
+        if '_acl' not in self._json_params:
+            self._json_params['_acl'] = []
+        if self.request.user:
+            acl = guards_engine.ACLField.stringify_acl([
+                (Allow, self.request.user.username, 'update')])
+            self._json_params['_acl'] = acl + self._json_params['_acl']
         story = self.Model(**self._json_params)
         story.arbitrary_object = ArbitraryObject()
         return story.save(self.request)
