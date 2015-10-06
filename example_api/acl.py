@@ -25,7 +25,6 @@ class UsersACL(CollectionACL):
     __acl__ = (
         (Allow, 'g:admin', ALL_PERMISSIONS),
         (Allow, Everyone, ('view', 'options')),
-        (Allow, Authenticated, 'create'),
         )
 
     def item_db_id(self, key):
