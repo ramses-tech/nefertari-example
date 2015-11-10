@@ -32,7 +32,7 @@ def bootstrap(config):
     root.default_factory = 'nefertari.acl.RootACL'
 
     config.include('example_api.models')
-    # config.include('nefertari.view')
+    config.include('nefertari.view')
     config.include('nefertari.json_httpexceptions')
 
     enable_selfalias(config, 'user_username')
