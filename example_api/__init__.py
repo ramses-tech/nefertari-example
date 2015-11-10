@@ -33,7 +33,6 @@ def bootstrap(config):
 
     config.include('example_api.models')
     # config.include('nefertari.view')
-    # config.include('nefertari.elasticsearch')
     config.include('nefertari.json_httpexceptions')
 
     enable_selfalias(config, 'user_username')
@@ -102,9 +101,6 @@ def main(global_config, **settings):
 
     from nefertari.engine import setup_database
     setup_database(config)
-
-    from nefertari.elasticsearch import ES
-    ES.setup_mappings()
 
     setup_event_handlers(config)
 
