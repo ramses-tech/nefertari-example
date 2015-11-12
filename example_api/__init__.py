@@ -55,9 +55,6 @@ def bootstrap(config):
             'user', reify=True)
     else:
         log.warning('*** USER AUTHENTICATION IS DISABLED ! ***')
-        config.add_request_method(
-            'example_api.models.User.get_unauth_user',
-            'user', reify=True)
 
     def _route_url(request, route_name, *args, **kw):
         if config.route_prefix:

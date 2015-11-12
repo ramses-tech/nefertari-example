@@ -26,7 +26,7 @@ class UsersACL(CollectionACL):
         )
 
     def item_db_id(self, key):
-        if key != 'self' or not self.request.user:
+        if key != 'self' or not getattr(self.request, 'user', None):
             return key
         return authenticated_userid(self.request)
 

@@ -66,15 +66,5 @@ class User(AuthUserMixin, BaseDocument):
     profile = eng.Relationship(
         document='Profile', backref_name='user', uselist=False)
 
-    @classmethod
-    def get_unauth_user(cls, request):
-        pk_field = cls.pk_field()
-        arg = request.matchdict.get('user_' + pk_field)
-
-        if arg == 'self' or not arg:
-            return cls.get_item(username='system')
-
-        return cls.get_item(**{pk_field: arg})
-
     def __repr__(self):
         return '<%s: username=%s>' % (self.__class__.__name__, self.username)
