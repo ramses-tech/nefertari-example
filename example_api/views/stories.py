@@ -29,14 +29,15 @@ class StoriesView(ACLFilterViewMixin, BaseView):
         return self.context
 
     def create(self):
-        if 'owner' not in self._json_params:
-            user = getattr(self.request, 'user', None)
-            self._json_params['owner'] = user
         if not self._json_params.get('_acl'):
             self._json_params['_acl'] = []
-        acl = guards_engine.ACLField.stringify_acl([
-            (Allow, self.request.user.username, 'update')])
-        self._json_params['_acl'] = acl + self._json_params['_acl']
+        user = getattr(self.request, 'user', None)
+        if 'owner' not in self._json_params:
+            self._json_params['owner'] = user
+        if user is not None:
+            acl = guards_engine.ACLField.stringify_acl([
+                (Allow, user.username, 'update')])
+            self._json_params['_acl'] = acl + self._json_params['_acl']
         story = self.Model(**self._json_params)
         story.arbitrary_object = ArbitraryObject()
         return story.save(self.request)
