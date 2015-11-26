@@ -28,6 +28,7 @@ class UsersView(BaseView):
 
     def update(self, **kwargs):
         user = self.Model.get_item(
+            _query_secondary=False,
             username=kwargs.pop('user_username'), **kwargs)
 
         # empty password?
@@ -44,6 +45,7 @@ class UsersView(BaseView):
 
     def delete(self, **kwargs):
         story = self.Model.get_item(
+            _query_secondary=False,
             username=kwargs.pop('user_username'), **kwargs)
         story.delete()
 
@@ -73,6 +75,7 @@ class UserAttributesView(BaseView):
 
     def create(self, **kwargs):
         obj = self.Model.get_item(
+            _query_secondary=False,
             username=kwargs.pop('user_username'), **kwargs)
         obj.update_iterables(
             self._json_params, self.attr,
@@ -91,6 +94,7 @@ class UserProfileView(BaseView):
 
     def create(self, **kwargs):
         obj = User.get_item(
+            _query_secondary=False,
             username=kwargs.pop('user_username'), **kwargs)
         profile = self.Model(**self._json_params)
         profile = profile.save()
@@ -99,6 +103,7 @@ class UserProfileView(BaseView):
 
     def update(self, **kwargs):
         user = User.get_item(
+            _query_secondary=False,
             username=kwargs.pop('user_username'), **kwargs)
         return user.profile.update(self._json_params)
 
