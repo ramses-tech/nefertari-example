@@ -24,7 +24,7 @@ class UsersView(BaseView):
     def create(self):
         self._json_params.setdefault('groups', ['user'])
         user = self.Model(**self._json_params)
-        return user.save()
+        return user.save(self.request)
 
     def update(self, **kwargs):
         user = self.Model.get_item(
@@ -38,7 +38,7 @@ class UsersView(BaseView):
 
         if 'reset' in self._json_params:
             self._json_params.pop('reset', '')
-        return user.update(self._json_params)
+        return user.update(self._json_params, request=self.request)
 
     def replace(self, **kwargs):
         return self.update(**kwargs)
@@ -47,7 +47,7 @@ class UsersView(BaseView):
         story = self.Model.get_item(
             _query_secondary=False,
             username=kwargs.pop('user_username'), **kwargs)
-        story.delete()
+        story.delete(self.request)
 
     def update_many(self):
         stories = self.Model.get_collection(**self._query_params)
@@ -80,7 +80,8 @@ class UserAttributesView(BaseView):
         obj.update_iterables(
             self._json_params, self.attr,
             unique=self.unique,
-            value_type=self.value_type)
+            value_type=self.value_type,
+            request=self.request)
         return getattr(obj, self.attr, None)
 
 
@@ -97,8 +98,8 @@ class UserProfileView(BaseView):
             _query_secondary=False,
             username=kwargs.pop('user_username'), **kwargs)
         profile = self.Model(**self._json_params)
-        profile = profile.save()
-        obj.update({'profile': profile})
+        profile = profile.save(self.request)
+        obj.update({'profile': profile}, request=self.request)
         return obj.profile
 
     def update(self, **kwargs):
