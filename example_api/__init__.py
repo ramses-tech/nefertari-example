@@ -102,7 +102,7 @@ def main(global_config, **settings):
     setup_event_handlers(config)
 
     config.commit()
-    initialize()
+    initialize(config)
 
     return config.make_wsgi_app()
 
@@ -156,7 +156,7 @@ def create_resources(config):
         factory="example_api.acl.StoriesACL")
 
 
-def initialize():
+def initialize(config):
     from example_api.models import User
     import transaction
     crypt = cryptacular.bcrypt.BCRYPTPasswordManager()
@@ -167,6 +167,7 @@ def initialize():
         s_email = Settings['system.email']
         log.info('Creating system user')
         user, created = User.get_or_create(
+            request=config,
             username=s_user,
             defaults=dict(
                 password=s_pass,
