@@ -49,10 +49,12 @@ class StoriesView(BaseView):
         story.delete(self.request)
 
     def delete_many(self):
-        stories = self.Model.get_collection(**self._query_params)
+        stories = self.Model.get_collection(
+            query_secondary=False, **self._query_params)
         return self.Model._delete_many(stories, self.request)
 
     def update_many(self):
-        stories = self.Model.get_collection(**self._query_params)
+        stories = self.Model.get_collection(
+            query_secondary=False, **self._query_params)
         return self.Model._update_many(
             stories, self._json_params, self.request)

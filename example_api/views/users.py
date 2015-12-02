@@ -44,19 +44,21 @@ class UsersView(BaseView):
         return self.update(**kwargs)
 
     def delete(self, **kwargs):
-        story = self.Model.get_item(
+        user = self.Model.get_item(
             _query_secondary=False,
             username=kwargs.pop('user_username'), **kwargs)
-        story.delete(self.request)
+        user.delete(self.request)
 
     def update_many(self):
-        stories = self.Model.get_collection(**self._query_params)
+        users = self.Model.get_collection(
+            query_secondary=False, **self._query_params)
         return self.Model._update_many(
-            stories, self._json_params, self.request)
+            users, self._json_params, self.request)
 
     def delete_many(self):
-        stories = self.Model.get_collection(**self._query_params)
-        return self.Model._delete_many(stories, self.request)
+        users = self.Model.get_collection(
+            query_secondary=False, **self._query_params)
+        return self.Model._delete_many(users, self.request)
 
 
 class UserAttributesView(BaseView):
