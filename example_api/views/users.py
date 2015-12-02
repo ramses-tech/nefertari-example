@@ -51,13 +51,13 @@ class UsersView(BaseView):
 
     def update_many(self):
         users = self.Model.get_collection(
-            query_secondary=False, **self._query_params)
+            _query_secondary=False, **self._query_params)
         return self.Model._update_many(
             users, self._json_params, self.request)
 
     def delete_many(self):
         users = self.Model.get_collection(
-            query_secondary=False, **self._query_params)
+            _query_secondary=False, **self._query_params)
         return self.Model._delete_many(users, self.request)
 
 
