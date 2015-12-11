@@ -108,7 +108,8 @@ class UserProfileView(BaseView):
         user = User.get_item(
             _query_secondary=False,
             username=kwargs.pop('user_username'), **kwargs)
-        return user.profile.update(self._json_params)
+        return user.profile.update(
+            self._json_params, request=self.request)
 
     def replace(self, **kwargs):
         return self.update(**kwargs)
