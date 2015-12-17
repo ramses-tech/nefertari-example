@@ -32,14 +32,6 @@ class UsersACL(CollectionACL):
             return key
         return authenticated_userid(self.request)
 
-    def item_acl(self, item):
-        username = str(item.username)
-        return (
-            (Allow, 'g:admin', ALL_PERMISSIONS),
-            (Allow, Everyone, ('view', 'options')),
-            (Allow, username, 'update'),
-            )
-
 
 class StoriesACL(DatabaseACLMixin, CollectionACL):
     item_model = Story
@@ -49,13 +41,3 @@ class StoriesACL(DatabaseACLMixin, CollectionACL):
         (Allow, Everyone, ('view', 'options')),
         (Allow, Authenticated, 'create'),
         )
-
-    def item_acl(self, item):
-        owner = item.owner
-        if hasattr(owner, 'username'):
-            owner = owner.username
-        return (
-            (Allow, 'g:admin', ALL_PERMISSIONS),
-            (Allow, Everyone, ('view', 'options')),
-            (Allow, str(owner), 'update'),
-            )
