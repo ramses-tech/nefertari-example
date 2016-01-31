@@ -1,7 +1,7 @@
 # `nefertari-example`
 This is an example RESTful API project using:
 - [Pyramid](https://github.com/Pylons/pyramid) as the web framework
-- [Nefertari](https://github.com/brandicted/nefertari) as the REST framework
+- [Nefertari](https://github.com/ramses-tech/nefertari) as the REST framework
 - [ElasticSearch](https://www.elastic.co/downloads/elasticsearch) for reads
 - and either [Postgres](http://www.postgresql.org/download/) or [MongoDB](http://www.mongodb.org/downloads) for writes
 
