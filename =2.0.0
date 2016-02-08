@@ -1,0 +1,5 @@
+Requirement already satisfied (use --upgrade to upgrade): elasticsearch-dsl in /home/post/.virtualenvs/nefex/lib/python2.7/site-packages
+Requirement already satisfied (use --upgrade to upgrade): elasticsearch<2.0.0,>=1.0.0 in /home/post/.virtualenvs/nefex/lib/python2.7/site-packages (from elasticsearch-dsl)
+Requirement already satisfied (use --upgrade to upgrade): six in /home/post/.virtualenvs/nefex/lib/python2.7/site-packages (from elasticsearch-dsl)
+Requirement already satisfied (use --upgrade to upgrade): python-dateutil in /home/post/.virtualenvs/nefex/lib/python2.7/site-packages (from elasticsearch-dsl)
+Requirement already satisfied (use --upgrade to upgrade): urllib3<2.0,>=1.8 in /home/post/.virtualenvs/nefex/lib/python2.7/site-packages (from elasticsearch<2.0.0,>=1.0.0->elasticsearch-dsl)
